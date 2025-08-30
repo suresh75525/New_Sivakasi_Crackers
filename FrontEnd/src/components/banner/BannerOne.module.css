@@ -1,0 +1,16 @@
+.banner-bg-image {
+  height: 700px;
+  max-width: 1300px;
+  margin: 0 auto;
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+  border-radius: 0px;
+}
+
+@media (max-width: 768px) {
+  .banner-bg-image {
+    height: 220px !important;
+    max-width: 100vw !important;
+  }
+}

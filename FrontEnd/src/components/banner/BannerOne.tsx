@@ -3,6 +3,7 @@ import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay } from "swiper/modules";
 import CategoryBb from "./CategoryBb";
+import styles from "./BannerOne.module.css";
 
 const banners = [
   {
@@ -45,12 +46,14 @@ const BannerOne = () => {
                   {banners.map((banner) => (
                     <SwiperSlide key={banner.id}>
                       <div
-                        className="banner-bg-image ptb--120 ptb_md--80 ptb_sm--60"
+                        className={`banner-bg-image ${styles["banner-bg-image"]} ptb--120 ptb_md--80 ptb_sm--60`}
                         style={{
                           backgroundImage: `url(${banner.image})`,
                           backgroundSize: "cover",
                           backgroundPosition: "center",
-                          height:"760px",
+                          height: "700px", // Reduced height
+                          maxWidth: "1300px", // Reduced width
+                          margin: "0 auto", // Center the banner
                           borderRadius: "0px",
                           width: "100%",
                         }}
@@ -58,15 +61,7 @@ const BannerOne = () => {
                         <div className="banner-one-inner-content">
                           <span className="pre">{banner.subtitle}</span>
                           <h1 className="title">{banner.title}</h1>
-                          {/* <a
-                            href={banner.link}
-                            className="rts-btn btn-primary radious-sm with-icon"
-                          >
-                            <div className="btn-text">Shop Now</div>
-                            <div className="arrow-icon">
-                              <i className="fa-light fa-arrow-right"></i>
-                            </div>
-                          </a> */}
+                          {/* ... */}
                         </div>
                       </div>
                     </SwiperSlide>

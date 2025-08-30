@@ -123,8 +123,14 @@ function HeaderFive() {
     <div>
       <>
         {/* rts header area start */}
-        <div className="rts-header-one-area-one">
-          <div className="header-top-area">
+        <div
+          className="rts-header-one-area-one"
+          style={{ paddingTop: 8, paddingBottom: 8 }}
+        >
+          <div
+            className="header-top-area"
+            style={{ paddingTop: 4, paddingBottom: 4 }}
+          >
             <div className="container">
               <div className="row">
                 <div className="col-lg-12">
@@ -137,14 +143,16 @@ function HeaderFive() {
                         </strong>
                         ! 🎆 Celebrate safe, Celebrate bright &nbsp;&nbsp;&nbsp;
                       </span>
-                      
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="search-header-area-main-1">
+          <div
+            className="search-header-area-main-1"
+            style={{ paddingTop: 8, paddingBottom: 8 }}
+          >
             <div className="container">
               <div className="row">
                 <div className="col-lg-12">
@@ -158,6 +166,7 @@ function HeaderFive() {
                                 src="assets/images/logo/siv_logo_svg.svg"
                                 alt="logo-main"
                                 className="logo"
+                                style={{ maxHeight: 40 }}
                               />
                             </a>
                             <div className="category-search-wrapper style-five">
@@ -271,6 +280,7 @@ function HeaderFive() {
             className={`rts-header-nav-area-one  header-four header--sticky  ${
               isSticky ? "sticky" : ""
             }`}
+            style={{ paddingTop: 8, paddingBottom: 8 }}
           >
             <div className="container">
               <div className="row">
@@ -278,9 +288,10 @@ function HeaderFive() {
                   <div className="logo-search-category-wrapper after-md-device-header header-mid-five-call">
                     <a href="/" className="logo-area">
                       <img
-                        src="assets/images/logo/logo-01.svg"
+                        src="assets/images/logo/siv_logo_svg.svg"
                         alt="logo-main"
                         className="logo"
+                        style={{ maxHeight: 40 }}
                       />
                     </a>
                     <div className="category-search-wrapper">
@@ -300,6 +311,12 @@ function HeaderFive() {
                         </button>
                       </form>
                     </div>
+                    <div
+                      className="accont-wishlist-cart-area-header"
+                      style={{ display: "flex" }}
+                    >
+                      <Cart />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -309,7 +326,7 @@ function HeaderFive() {
         {/* rts header area end */}
       </>
       <BackToTop />
-      <Sidebar />
+      {/* <Sidebar /> */}
     </div>
   );
 }
