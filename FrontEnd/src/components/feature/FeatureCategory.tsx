@@ -1,77 +1,28 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
-import BlogOneMain from "../blog/BlogOneMain";
 import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import { getCategories } from "../services/apiServices";
 
-const categories = [
-  {
-    img: "/assets/images/category/sparks.png",
-    title: "Sparklers",
-    items: "25 Items",
-  },
-  {
-    img: "/assets/images/category/fancy_color_sparks.jpeg",
-    title: "Organic Vegetable",
-    items: "299 Items",
-  },
-  {
-    img: "/assets/images/category/03.png",
-    title: "Organic Vegetable",
-    items: "299 Items",
-  },
-  {
-    img: "/assets/images/category/04.png",
-    title: "Organic Vegetable",
-    items: "299 Items",
-  },
-  {
-    img: "/assets/images/category/05.png",
-    title: "Organic Foods",
-    items: "299 Items",
-  },
-  {
-    img: "/assets/images/category/06.png",
-    title: "Primiun Vegetable",
-    items: "299 Items",
-  },
-  {
-    img: "/assets/images/category/07.png",
-    title: "Organic Vegetable",
-    items: "299 Items",
-  },
-  {
-    img: "/assets/images/category/08.png",
-    title: "Organic Vegetable",
-    items: "299 Items",
-  },
-  {
-    img: "/assets/images/category/09.png",
-    title: "Organic Vegetable",
-    items: "299 Items",
-  },
-  {
-    img: "/assets/images/category/10.png",
-    title: "Organic Vegetable",
-    items: "299 Items",
-  },
-];
+type Category = {
+  id: number;
+  label: string;
+  count: number;
+};
+
 const FeaturedCategories = () => {
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   useEffect(() => {
-    // define async fn inside useEffect
     const fetchData = async () => {
       try {
         const data: any = await getCategories();
-        const formattedData = data.map((item) => ({
+        // Format: { category_id, name, product_count }
+        const formattedData: Category[] = data.map((item: any) => ({
           id: item.category_id,
           label: item.name,
-          icon: `${item.image}`,
-          count: item.items, // you can map icons by category if you have them
+          count: item.product_count,
         }));
         setCategories(formattedData);
       } catch (error) {
@@ -79,7 +30,7 @@ const FeaturedCategories = () => {
       }
     };
 
-    fetchData(); // call it
+    fetchData();
   }, []);
   return (
     <div className="rts-category-area rts-section-gap">
@@ -90,7 +41,12 @@ const FeaturedCategories = () => {
               <div className="row">
                 <div className="col-lg-12">
                   <div className="title-area-between">
-                    <h2 className="title mb--0" style={{fontWeight:'bold',color:'black'}}>Available Categories</h2>
+                    <h2
+                      className="title mb--0"
+                      style={{ fontWeight: "bold", color: "black" }}
+                    >
+                      Available Categories
+                    </h2>
                     <div className="next-prev-swiper-wrapper">
                       <div className="swiper-button-prev">
                         <i className="fa-regular fa-chevron-left"></i>
@@ -130,20 +86,74 @@ const FeaturedCategories = () => {
                           >
                             {categories.map((category, index) => (
                               <SwiperSlide key={index}>
-                                {/* <div className="single-category-one height-180">
-                                                                    <a href={`/shop?category=${category.id}`}>
-                                                                        <Image src={category.icon} alt="category" width={100} height={100} />
-                                                                        <p>{category.label}</p>
-                                                                        <span>{category.count}</span>
-                                                                    </a>
-                                                                </div> */}
-                                <div className="single-blog-area-start">
-                                  <BlogOneMain
-                                    Slug={`/shop?category=${category.id}`}
-                                    blogImage={category.icon}
-                                    blogTitle={category.label}
-                                  />
-                                </div>
+                                <a
+                                  href={`/shop?category=${category.id}`}
+                                  style={{
+                                    textDecoration: "none",
+                                    color: "#222",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                    background: "#fff",
+                                    borderRadius: "12px",
+                                    boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                                    padding: "8px 12px", // reduced padding
+                                    minHeight: "40px", // reduced height
+                                    fontWeight: "500",
+                                    fontSize: "1.1rem", // slightly increased base font
+                                    gap: "10px",
+                                    width: "100%",
+                                    maxWidth: "220px", // reduce card width
+                                  }}
+                                >
+                                  {/* Left: Cart icon and category name */}
+                                  <span
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: "8px",
+                                      minWidth: 0,
+                                    }}
+                                  >
+                                    <i
+                                      className="fa fa-shopping-cart"
+                                      style={{
+                                        fontSize: "1.3rem",
+                                        color: "#0070f3",
+                                      }}
+                                    />
+                                    <span
+                                      style={{
+                                        maxWidth: "120px",
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis",
+                                        whiteSpace: "nowrap",
+                                        fontWeight: "bold",
+                                        fontSize: "1.25rem", // increase category font size
+                                      }}
+                                      title={category.label}
+                                    >
+                                      {category.label}
+                                    </span>
+                                  </span>
+                                  {/* Right: Product count badge */}
+                                  <span
+                                    style={{
+                                      background: "#0070f3",
+                                      color: "#fff",
+                                      borderRadius: "50%",
+                                      minWidth: "28px",
+                                      height: "28px",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      fontWeight: "bold",
+                                      fontSize: "1rem",
+                                    }}
+                                  >
+                                    {category.count}
+                                  </span>
+                                </a>
                               </SwiperSlide>
                             ))}
                           </Swiper>

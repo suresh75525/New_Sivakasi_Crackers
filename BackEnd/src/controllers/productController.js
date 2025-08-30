@@ -6,11 +6,37 @@ const sequelize = require("../config/db");
 // Get all categories (enabled only)
 exports.getCategories = async (req, res) => {
   try {
+    // Get all enabled categories
     const categories = await Category.findAll({
       where: { is_enabled: true },
       order: [["name", "ASC"]],
+      attributes: ["category_id", "name", "is_enabled"],
+      raw: true,
     });
-    return res.json(categories);
+
+    // Get product counts for each category
+    const productCounts = await Product.findAll({
+      attributes: [
+        "category_id",
+        [sequelize.fn("COUNT", sequelize.col("product_id")), "product_count"],
+      ],
+      where: { is_available: true },
+      group: ["category_id"],
+      raw: true,
+    });
+
+    // Map counts to categories
+    const countsMap = {};
+    productCounts.forEach((row) => {
+      countsMap[row.category_id] = parseInt(row.product_count, 10);
+    });
+
+    const result = categories.map((cat) => ({
+      ...cat,
+      product_count: countsMap[cat.category_id] || 0,
+    }));
+
+    return res.json(result);
   } catch (error) {
     console.error("❌ Error in getCategories:", error);
     return res.status(500).json({ message: "Server error" });
@@ -174,46 +200,40 @@ exports.getProductsByCategory = async (req, res) => {
 
 exports.getHomepageProducts = async (req, res) => {
   try {
-    const limitPerCategory = parseInt(req.query.limit) || 5;
-
     const query = `
-      SELECT *
-      FROM (
-        SELECT 
-          p.product_id,
-          p.category_id,
-          p.name,
-          p.description,
-          p.price_per_unit,
-          p.image_url,
-          p.is_available,
-          p.gst_percentage,
-          c.name AS category_name,
-          ROW_NUMBER() OVER (PARTITION BY p.category_id ORDER BY p.product_id ASC) AS row_num
-        FROM products p
-        JOIN categories c ON p.category_id = c.category_id
-        WHERE p.is_available = 1
-      ) AS ranked
-      WHERE row_num <= :limitPerCategory
-      ORDER BY category_id, row_num;
+      SELECT 
+        p.product_id,
+        p.category_id,
+        p.name,
+        p.description,
+        p.price_per_unit,
+        p.image_url,
+        p.is_available,
+        p.gst_percentage,
+        c.name AS category_name
+      FROM products p
+      JOIN categories c ON p.category_id = c.category_id
+      WHERE p.is_available = 1
+      ORDER BY p.category_id, p.product_id;
     `;
 
     const products = await sequelize.query(query, {
-      replacements: { limitPerCategory },
       type: sequelize.QueryTypes.SELECT,
     });
 
-    // Group by category
+    // Group by category and add total_products
     const grouped = {};
     products.forEach((prod) => {
       if (!grouped[prod.category_id]) {
         grouped[prod.category_id] = {
           category_id: prod.category_id,
           category_name: prod.category_name,
+          total_products: 0,
           products: [],
         };
       }
       grouped[prod.category_id].products.push(prod);
+      grouped[prod.category_id].total_products += 1;
     });
 
     res.json(Object.values(grouped));
