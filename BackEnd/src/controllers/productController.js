@@ -91,9 +91,21 @@ exports.getProducts = async (req, res) => {
 };
 
 // controllers/productController.js
+// In getAllProducts
 exports.getAllProducts = async (req, res) => {
   try {
     const products = await Product.findAll({
+      attributes: [
+        "product_id",
+        "category_id",
+        "name",
+        "description",
+        "price_per_unit",
+        "original_price", // <-- Add this line
+        "image_url",
+        "is_available",
+        "gst_percentage",
+      ],
       order: [["product_id", "ASC"]],
       raw: true,
       nest: true,
@@ -160,24 +172,26 @@ exports.getProductsByCategory = async (req, res) => {
     const total = countResult.total;
 
     // ✅ Data query
+    // Example for getProductsByCategory
     const productsQuery = `
-      SELECT 
-        p.product_id,
-        p.category_id,
-        p.name,
-        p.description,
-        p.price_per_unit,
-        p.image_url,
-        p.is_available,
-        p.gst_percentage,
-        c.name AS category_name
-      FROM products p
-      JOIN categories c ON p.category_id = c.category_id
-      WHERE p.category_id = :categoryId AND p.is_available = 1
-      ${search ? "AND p.name LIKE :search" : ""}
-      ORDER BY ${sortBy} ${sortOrder}
-      LIMIT :limit OFFSET :offset
-    `;
+  SELECT 
+    p.product_id,
+    p.category_id,
+    p.name,
+    p.description,
+    p.price_per_unit,
+    p.original_price, -- <-- Add this line
+    p.image_url,
+    p.is_available,
+    p.gst_percentage,
+    c.name AS category_name
+  FROM products p
+  JOIN categories c ON p.category_id = c.category_id
+  WHERE p.category_id = :categoryId AND p.is_available = 1
+  ${search ? "AND p.name LIKE :search" : ""}
+  ORDER BY ${sortBy} ${sortOrder}
+  LIMIT :limit OFFSET :offset
+`;
     const products = await sequelize.query(productsQuery, {
       replacements: { categoryId, search, limit, offset },
       type: sequelize.QueryTypes.SELECT,
