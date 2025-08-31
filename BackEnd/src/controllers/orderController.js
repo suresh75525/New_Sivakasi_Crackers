@@ -109,7 +109,8 @@ exports.placeOrder = async (req, res) => {
       { transaction: t }
     );
 
-    await GuestCart.destroy({ where: { session_id }, transaction: t });
+    const deletedCount = await GuestCart.destroy({ where: { session_id }, transaction: t });
+    console.log(`Deleted guest cart records: ${deletedCount} for session_id: ${session_id}`);
 
     // ✅ COMMIT FIRST
     await t.commit();
@@ -119,12 +120,12 @@ exports.placeOrder = async (req, res) => {
       const pdfPath = await generateInvoice(order.order_id); // no tx
       await Invoice.create({
         order_id: order.order_id,
-        pdf_url: `/invoices/${path.basename(pdfPath)}`,
+        pdf_url: `/ invoices / ${path.basename(pdfPath)}`,
       }); // no tx
 
       await sendWhatsAppMessageWithPDF(
         process.env.ADMIN_WHATSAPP,
-        `🧾 New Order Placed!\nOrder ID: ${order.order_id}\nCustomer: ${name} (${mobile_number})`,
+        `🧾 New Order Placed!\nOrder ID: ${order.order_id}\nCustomer: ${name}(${mobile_number})`,
         pdfPath
       );
     } catch (sideEffectErr) {
@@ -134,7 +135,7 @@ exports.placeOrder = async (req, res) => {
       );
       // optional: update a flag on order or log to a table for retry
     }
-
+    // here
     return res.json({
       message: "Order placed successfully",
       order_id: order.order_id,
@@ -142,7 +143,7 @@ exports.placeOrder = async (req, res) => {
   } catch (error) {
     try {
       await t.rollback();
-    } catch {}
+    } catch { }
     console.error("❌ placeOrder error:", error);
     return res.status(500).json({ message: "Server error" });
   }

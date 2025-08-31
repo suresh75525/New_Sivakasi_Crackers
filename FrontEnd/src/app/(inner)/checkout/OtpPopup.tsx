@@ -75,9 +75,11 @@ const OtpPopup: React.FC<OtpPopupProps> = ({
 
     try {
       const result = await placeOrder(payload);
-      if (result.success) {
+      if (result.message === "Order placed successfully") {
+        toast.success(result.message);
         onOrderSuccess();
-        localStorage.removeItem("session_id"); // Remove session id
+        sessionStorage.removeItem("session_id"); 
+          localStorage.removeItem("cart_items");   // Remove cart items
         router.push("/"); // Redirect to home page
       } else {
         toast.error("Order failed. Please try again.", {

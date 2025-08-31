@@ -7,7 +7,7 @@ import FeatureCategory from "@/components/feature/FeatureCategory";
 import FooterThree from "@/components/footer/FooterTwo";
 import ProductList from "@/components/product/ProductList";
 import { getHomepageProducts } from "@/components/services/apiServices";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 type Product = {
@@ -32,26 +32,42 @@ type Category = {
 function App() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   useEffect(() => {
     getHomepageProducts()
       .then((data) => setCategories(data))
       .catch((error) => {
         console.error("Failed to fetch categories:", error);
+        toast.error("Failed to load products. Please try again.");
       })
       .finally(() => setLoading(false));
   }, []);
 
   return (
     <div className="index-bg-gray">
-      <HeaderFive />
+      <HeaderFive
+        externalSetSearchTerm={setSearchTerm}
+        setSelectedCategoryId={setSelectedCategory}
+      />
       <BannerOne />
-      <FeatureCategory />
+      <FeatureCategory onCategorySelect={setSelectedCategory} />
+
       {loading ? (
-        <div>Loading products...</div>
+        <div className="flex justify-center items-center h-40">
+          <span className="loader"></span>
+        </div>
+      ) : categories.length > 0 ? (
+        <ProductList
+          categories={categories}
+          selectedCategoryId={selectedCategory}
+          searchTerm={searchTerm}
+        />
       ) : (
-        <ProductList categories={categories} />
+        <div className="text-center p-6">No products found.</div>
       )}
+
       <FooterThree />
       <ToastContainer position="top-right" />
     </div>

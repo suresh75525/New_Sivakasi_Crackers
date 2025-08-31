@@ -23,7 +23,7 @@ const CartDropdown: React.FC = () => {
       <span className="number">{activeItems.length}</span>
 
       <div className="category-sub-menu card-number-show">
-        <h5 className="shopping-cart-number">
+        <h5 className="shopping-cart-number" style={{ color:"#FF9900" }}>
           Shopping Cart ({activeItems.length.toString().padStart(2, "0")})
         </h5>
 
@@ -50,7 +50,7 @@ const CartDropdown: React.FC = () => {
                 </Link>
                 <div className="number">
                   {item.quantity} <i className="fa-regular fa-x" />
-                  <span>${(item.price * item.quantity).toFixed(2)}</span>
+                  <span style={{ color:"black" }}>Rs. {(item.price * item.quantity).toFixed(2)}</span>
                 </div>
               </div>
             </div>
@@ -63,7 +63,7 @@ const CartDropdown: React.FC = () => {
               <span>Sub Total:</span>
               <span className="number-c">${total.toFixed(2)}</span>
             </div>
-            <div className="single-progress-area-incard">
+            {/* <div className="single-progress-area-incard">
               <div className="progress">
                 <div
                   className="progress-bar wow fadeInLeft"
@@ -76,7 +76,7 @@ const CartDropdown: React.FC = () => {
                   }}
                 />
               </div>
-            </div>
+            </div> */}
             {/* {total < freeShippingThreshold && (
               <p>
                 Spend More <span>${remaining.toFixed(2)}</span> to reach{" "}

@@ -8,98 +8,82 @@ import BackToTop from "@/components/common/BackToTop";
 import Sidebar from "./Sidebar";
 import { useCompare } from "@/components/header/CompareContext";
 import { useRouter } from "next/navigation";
+import { getCategories, getProducts } from "../services/apiServices"; // <-- Add your actual services path
 
-function HeaderFive() {
+type Category = { id: number; name: string };
+type Product = { id: number; name: string };
+type Suggestion = { label: string; type: "category" | "product"; id: number };
+
+function HeaderFive({ setSelectedCategoryId, externalSetSearchTerm }: { setSelectedCategoryId?: (id: number) => void, externalSetSearchTerm?: (term: string) => void }) {
   const { compareItems } = useCompare();
-  // header sticky
   const [isSticky, setIsSticky] = useState(false);
+
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 150) {
-        setIsSticky(true);
-      } else {
-        setIsSticky(false);
-      }
+      setIsSticky(window.scrollY > 150);
     };
-
     window.addEventListener("scroll", handleScroll);
-
-    // Clean up the event listener on component unmount
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const handleMenuClick = () => {
     const sidebar = document.querySelector(".side-bar.header-two");
-    if (sidebar) {
-      sidebar.classList.toggle("show");
-    }
+    if (sidebar) sidebar.classList.toggle("show");
   };
 
   const handleSearchOpen = () => {
     const sidebar = document.querySelector(".search-input-area");
-    if (sidebar) {
-      sidebar.classList.toggle("show");
-    }
+    if (sidebar) sidebar.classList.toggle("show");
   };
 
-  // filter search action js start
+  // --- Search suggestion logic start ---
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
-  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const allSuggestions = [
-    "Profitable business makes your profit Best Solution",
-    "Details Profitable business makes your profit",
-    "One Profitable business makes your profit",
-    "Me Profitable business makes your profit",
-    "Details business makes your profit",
-    "Firebase business makes your profit",
-    "Netlyfy business makes your profit",
-    "Profitable business makes your profit",
-    "Valuable business makes your profit",
-    "System business makes your profit",
-    "Profitables business makes your profit",
-    "Content business makes your profit",
-    "Dalivaring business makes your profit",
-    "Staning business makes your profit",
-    "Best business makes your profit",
-    "cooler business makes your profit",
-    "Best-one Profitable business makes your profit",
-    "Super Fresh Meat",
-    "Original Fresh frut",
-    "Organic Fresh frut",
-    "Lite Fresh frut",
-  ];
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    getCategories().then(data => setCategories(data));
+    getProducts().then(data => setProducts(data));
+  }, []);
 
   useEffect(() => {
     if (searchTerm.trim().length > 0) {
-      const filtered = allSuggestions.filter((item) =>
-        item.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setSuggestions(filtered.slice(0, 5));
+      const categorySuggestions = categories
+        .filter(cat => cat.name.toLowerCase().includes(searchTerm.toLowerCase()))
+        .map(cat => ({ label: cat.name, type: "category", id: cat.id } as const));
+      const productSuggestions = products
+        .filter(prod => prod.name.toLowerCase().includes(searchTerm.toLowerCase()))
+        .map(prod => ({ label: prod.name, type: "product", id: prod.id } as const));
+      setSuggestions([...categorySuggestions, ...productSuggestions].slice(0, 8));
       setShowSuggestions(true);
     } else {
       setSuggestions([]);
       setShowSuggestions(false);
     }
-  }, [searchTerm]);
+  }, [searchTerm, categories, products]);
 
-  const handleSuggestionClick = (suggestion: string) => {
-    setSearchTerm(suggestion);
+  const handleSuggestionClick = (suggestion: Suggestion) => {
+    setSearchTerm(suggestion.label);
+    externalSetSearchTerm?.(suggestion.label);
     setShowSuggestions(false);
-    router.push(`/shop?search=${encodeURIComponent(suggestion)}`);
+
+    if (suggestion.type === "category" && setSelectedCategoryId) {
+      // ✅ tell parent to filter ProductList by this category
+      setSelectedCategoryId(suggestion.id);
+    } else if (suggestion.type === "product") {
+      // ✅ navigate to product detail
+      router.push(`/product/${suggestion.id}`);
+    }
   };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        inputRef.current &&
-        !inputRef.current.contains(event.target as Node)
-      ) {
+      if (inputRef.current && !inputRef.current.contains(event.target as Node)) {
         setShowSuggestions(false);
       }
     };
@@ -116,8 +100,7 @@ function HeaderFive() {
       router.push("/shop");
     }
   };
-
-  // filter search action js end
+  // --- Search suggestion logic end ---
 
   return (
     <div>
@@ -231,20 +214,25 @@ function HeaderFive() {
                                     {suggestions.map((suggestion, index) => (
                                       <li
                                         key={index}
-                                        onClick={() =>
-                                          handleSuggestionClick(suggestion)
-                                        }
+                                        onMouseDown={(e) => {
+                                          e.preventDefault(); // keeps input focus
+                                          handleSuggestionClick(suggestion); // ✅ now sets text box & closes dropdown
+                                        }}
                                         style={{
                                           padding: "8px 12px",
                                           cursor: "pointer",
+                                          color:
+                                            suggestion.type === "category" ? "#0070f3" : "#222",
+                                          fontWeight:
+                                            suggestion.type === "category" ? "bold" : "normal",
                                         }}
-                                        onMouseDown={(e) => e.preventDefault()} // prevent input blur
                                       >
-                                        {suggestion}
+                                        {suggestion.label}
                                       </li>
                                     ))}
                                   </ul>
                                 )}
+
                               </form>
                             </div>
                             <div className="accont-wishlist-cart-area-header">
@@ -277,9 +265,8 @@ function HeaderFive() {
             </div>
           </div>
           <div
-            className={`rts-header-nav-area-one  header-four header--sticky  ${
-              isSticky ? "sticky" : ""
-            }`}
+            className={`rts-header-nav-area-one  header-four header--sticky  ${isSticky ? "sticky" : ""
+              }`}
             style={{ paddingTop: 8, paddingBottom: 8 }}
           >
             <div className="container">

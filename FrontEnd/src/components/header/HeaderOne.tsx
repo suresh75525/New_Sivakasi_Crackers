@@ -1,5 +1,7 @@
 "use client"
 import React, { useState, useEffect, useRef } from 'react';
+import { getCategories, getProducts } from "../services/apiServices"; // Update to your actual services path
+// Adjust path if needed
 import HeaderNav from './HeaderNav';
 import CategoryMenu from './CategoryMenu';
 import Cart from './Cart';
@@ -9,7 +11,8 @@ import BackToTop from "@/components/common/BackToTop";
 import { useCompare } from '@/components/header/CompareContext';
 import { useRouter } from 'next/navigation';
 
-function HeaderFive() {
+// Add setSelectedCategoryId as a prop to scroll to category section
+function HeaderFive({ setSelectedCategoryId }: { setSelectedCategoryId: (id: number) => void }) {
     const { compareItems } = useCompare();
 
     // Countdown setup
@@ -66,52 +69,53 @@ function HeaderFive() {
     };
 
     const router = useRouter();
+    type Category = { id: number; name: string };
+    type Product = { id: number; name: string };
+
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [products, setProducts] = useState<Product[]>([]);
+    const [suggestions, setSuggestions] = useState<{ label: string, type: "category" | "product", id: number }[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
-    const [suggestions, setSuggestions] = useState<string[]>([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
+
+
     const inputRef = useRef<HTMLInputElement>(null);
 
-    const allSuggestions = [
-        "Profitable business makes your profit Best Solution",
-        "Details Profitable business makes your profit",
-        "One Profitable business makes your profit",
-        "Me Profitable business makes your profit",
-        "Details business makes your profit",
-        "Firebase business makes your profit",
-        "Netlyfy business makes your profit",
-        "Profitable business makes your profit",
-        "Valuable business makes your profit",
-        "System business makes your profit",
-        "Profitables business makes your profit",
-        "Content business makes your profit",
-        "Dalivaring business makes your profit",
-        "Staning business makes your profit",
-        "Best business makes your profit",
-        "cooler business makes your profit",
-        "Best-one Profitable business makes your profit",
-        "Super Fresh Meat",
-        "Original Fresh frut",
-        "Organic Fresh frut",
-        "Lite Fresh frut"
-    ];
+    useEffect(() => {
+        // Fetch categories and products from services
+        getCategories().then(data => setCategories(data));
+        getProducts().then(data => setProducts(data));
+    }, []);
 
     useEffect(() => {
         if (searchTerm.trim().length > 0) {
-            const filtered = allSuggestions.filter(item =>
-                item.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-            setSuggestions(filtered.slice(0, 5));
+            const categorySuggestions = categories
+                .filter(cat => cat.name.toLowerCase().includes(searchTerm.toLowerCase()))
+                .map(cat => ({ label: cat.name, type: "category", id: cat.id } as const));
+
+            const productSuggestions = products
+                .filter(prod => prod.name.toLowerCase().includes(searchTerm.toLowerCase()))
+                .map(prod => ({ label: prod.name, type: "product", id: prod.id } as const));
+            // ...existing code...
+
+            setSuggestions([...categorySuggestions, ...productSuggestions].slice(0, 8));
             setShowSuggestions(true);
         } else {
             setSuggestions([]);
             setShowSuggestions(false);
         }
-    }, [searchTerm]);
+    }, [searchTerm, categories, products]);
 
-    const handleSuggestionClick = (suggestion: string) => {
-        setSearchTerm(suggestion);
+
+    const handleSuggestionClick = (suggestion: { label: string, type: "category" | "product", id: number }) => {
+        setSearchTerm(suggestion.label);
         setShowSuggestions(false);
-        router.push(`/shop?search=${encodeURIComponent(suggestion)}`);
+
+        if (suggestion.type === "category") {
+            setSelectedCategoryId(suggestion.id); // Scroll to category section
+        } else if (suggestion.type === "product") {
+            router.push(`/product/${suggestion.id}`); // Navigate to product detail
+        }
     };
 
     useEffect(() => {
@@ -137,50 +141,6 @@ function HeaderFive() {
     return (
         <>
             <div className="rts-header-one-area-one">
-                {/* top bar */}
-                
-
-                {/* mid bar */}
-                {/* <div className="header-mid-one-wrapper">
-                    <div className="container">
-                        <div className="row">
-                            <div className="col-lg-12">
-                                <div className="header-mid-wrapper-between">
-                                    <div className="nav-sm-left">
-                                        <ul className="nav-h_top">
-                                            <li><a href="/about">About Us</a></li>
-                                            <li><a href="/account">My Account</a></li>
-                                            <li><a href="/wishlist">Wishlist</a></li>
-                                        </ul>
-                                        <p className="para">We deliver to your everyday from 7:00 to 22:00</p>
-                                    </div>
-                                    <div className="nav-sm-left">
-                                        <ul className="nav-h_top language">
-                                            <li className="category-hover-header language-hover">
-                                                <a href="#">English</a>
-                                                <ul className="category-sub-menu">
-                                                    <li><a href="#"><span>Italian</span></a></li>
-                                                    <li><a href="#"><span>Russian</span></a></li>
-                                                    <li><a href="#"><span>Chinian</span></a></li>
-                                                </ul>
-                                            </li>
-                                            <li className="category-hover-header language-hover">
-                                                <a href="#">USD</a>
-                                                <ul className="category-sub-menu">
-                                                    <li><a href="#"><span>Rubol</span></a></li>
-                                                    <li><a href="#"><span>Rupi</span></a></li>
-                                                    <li><a href="#"><span>Euro</span></a></li>
-                                                </ul>
-                                            </li>
-                                            <li><a href="/trackorder">Track Order</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> */}
-
                 {/* logo + search */}
                 <div className="search-header-area-main">
                     <div className="container">
@@ -188,7 +148,6 @@ function HeaderFive() {
                             <div className="col-lg-12">
                                 <div className="logo-search-category-wrapper">
                                     <a href="/" className="logo-area">
-                                    
                                         <img src="/assets/images/logo/logo_06.png" width={120} height={30} alt="logo-main" className="h-10 w-auto" />
                                     </a>
                                     <div className="category-search-wrapper">
@@ -232,15 +191,20 @@ function HeaderFive() {
                                                     {suggestions.map((suggestion, index) => (
                                                         <li
                                                             key={index}
-                                                            onClick={() => handleSuggestionClick(suggestion)}
+                                                            onMouseDown={(e) => {
+                                                                e.preventDefault(); // prevents blur
+                                                                handleSuggestionClick(suggestion); // manually call the handler
+                                                            }}
                                                             style={{
                                                                 padding: '8px 12px',
                                                                 cursor: 'pointer',
+                                                                color: suggestion.type === "category" ? "#0070f3" : "#222",
+                                                                fontWeight: suggestion.type === "category" ? "bold" : "normal"
                                                             }}
-                                                            onMouseDown={(e) => e.preventDefault()} // prevent input blur
                                                         >
-                                                            {suggestion}
+                                                            {suggestion.label}
                                                         </li>
+
                                                     ))}
                                                 </ul>
                                             )}
@@ -277,7 +241,6 @@ function HeaderFive() {
                         </div>
                     </div>
                 </div>
-
                 {/* main nav */}
                 <HeaderNav />
             </div>
@@ -288,3 +251,4 @@ function HeaderFive() {
 }
 
 export default HeaderFive;
+// ...existing code...

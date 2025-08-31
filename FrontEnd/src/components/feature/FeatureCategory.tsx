@@ -12,7 +12,11 @@ type Category = {
   count: number;
 };
 
-const FeaturedCategories = () => {
+type FeaturedCategoriesProps = {
+  onCategorySelect: (categoryId: number) => void;
+};
+
+const FeaturedCategories: React.FC<FeaturedCategoriesProps> = ({ onCategorySelect }) => {
   const [categories, setCategories] = useState<Category[]>([]);
   useEffect(() => {
     const fetchData = async () => {
@@ -86,9 +90,10 @@ const FeaturedCategories = () => {
                           >
                             {categories.map((category, index) => (
                               <SwiperSlide key={index}>
-                                <a
-                                  href={`/shop?category=${category.id}`}
+                                <div
+                                  onClick={() => onCategorySelect(category.id)}
                                   style={{
+                                    cursor: "pointer",
                                     textDecoration: "none",
                                     color: "#222",
                                     display: "flex",
@@ -97,13 +102,13 @@ const FeaturedCategories = () => {
                                     background: "#fff",
                                     borderRadius: "12px",
                                     boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-                                    padding: "8px 12px", // reduced padding
-                                    minHeight: "40px", // reduced height
+                                    padding: "8px 12px",
+                                    minHeight: "40px",
                                     fontWeight: "500",
-                                    fontSize: "1.1rem", // slightly increased base font
+                                    fontSize: "1.1rem",
                                     gap: "10px",
                                     width: "100%",
-                                    maxWidth: "220px", // reduce card width
+                                    maxWidth: "220px",
                                   }}
                                 >
                                   {/* Left: Cart icon and category name */}
@@ -153,7 +158,7 @@ const FeaturedCategories = () => {
                                   >
                                     {category.count}
                                   </span>
-                                </a>
+                                </div>
                               </SwiperSlide>
                             ))}
                           </Swiper>
