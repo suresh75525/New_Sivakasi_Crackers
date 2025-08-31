@@ -13,6 +13,7 @@ type Product = {
   name: string;
   description?: string | null;
   price_per_unit: string;
+  original_price?: string;
   image_url?: string;
   is_available: number;
   gst_percentage: string;
@@ -28,23 +29,24 @@ type Category = {
 
 interface ProductListProps {
   categories: Category[];
-  selectedCategoryId?: number | null;  // allow null
+  selectedCategoryId?: number | null;
   searchTerm: string;
 }
 
 const PRODUCTS_PER_PAGE = 5;
 
-const ProductList: React.FC<ProductListProps> = ({ categories, selectedCategoryId, searchTerm }) => {
+const ProductList: React.FC<ProductListProps> = ({
+  categories,
+  selectedCategoryId,
+  searchTerm,
+}) => {
   const [pageByCategory, setPageByCategory] = useState<{
     [key: number]: number;
   }>({});
   const [loadingProductId, setLoadingProductId] = useState<number | null>(null);
   const categoryRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
   useEffect(() => {
-    if (
-      selectedCategoryId &&
-      categoryRefs.current[selectedCategoryId]
-    ) {
+    if (selectedCategoryId && categoryRefs.current[selectedCategoryId]) {
       categoryRefs.current[selectedCategoryId]?.scrollIntoView({
         behavior: "smooth",
         block: "start",
@@ -78,7 +80,7 @@ const ProductList: React.FC<ProductListProps> = ({ categories, selectedCategoryI
           p.name.toLowerCase().includes(lower)
         ).length,
       }))
-      .filter((cat) => cat.products.length > 0); // remove empty cats
+      .filter((cat) => cat.products.length > 0);
   }
 
   // Get cart count for a product
@@ -201,8 +203,35 @@ const ProductList: React.FC<ProductListProps> = ({ categories, selectedCategoryI
                               : product.name}
                           </div>
 
-                          <div className={styles.productPrice}>
-                            ₹{product.price_per_unit}
+                          {/* Price row: old price (strike) and offer price on same line */}
+                          <div
+                            className={styles.productPrice}
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "8px",
+                            }}
+                          >
+                            {product.original_price && (
+                              <span
+                                style={{
+                                  textDecoration: "line-through",
+                                  color: "#888",
+                                  fontSize: "1rem",
+                                }}
+                              >
+                                ₹{product.original_price}
+                              </span>
+                            )}
+                            <span
+                              style={{
+                                color: "#e53935",
+                                fontWeight: "bold",
+                                fontSize: "1.1rem",
+                              }}
+                            >
+                              ₹{product.price_per_unit}
+                            </span>
                           </div>
 
                           {product.is_available ? (
@@ -271,7 +300,6 @@ const ProductList: React.FC<ProductListProps> = ({ categories, selectedCategoryI
       )}
     </div>
   );
-
 };
 
 export default ProductList;
