@@ -1,7 +1,7 @@
 "use client";
 
 import HeaderFive from "@/components/header/HeaderFive";
-import FooterOne from "@/components/footer/FooterOne";
+// // import FooterOne from "@/components/footer/FooterOne";
 import CompareElements from "./CompareElements";
 
 export default function Home() {
@@ -50,7 +50,7 @@ export default function Home() {
                 </div>
             </div>
 
-            <FooterOne />
+            {/* <FooterOne /> */}
         </div>
     );
 }

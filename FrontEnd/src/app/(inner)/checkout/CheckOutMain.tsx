@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import OtpPopup from "./OtpPopup";
 import { useCart } from "@/components/header/CartContext";
+import { requestOtp } from "@/components/services/apiServices";
 import TextField from "@mui/material/TextField";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -40,12 +41,28 @@ export default function CheckOutMain() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // 1. Validate pincode
     const isValid = await validatePincode(billingInfo.pincode);
     if (!isValid) {
       alert("Invalid pincode. Please enter a real Indian pincode.");
       return;
     }
-    setOtpOpen(true);
+
+    try {
+      // 2. Call OTP request API
+      const response = await requestOtp(billingInfo.mobile); // assuming billingInfo has mobile
+      console.log("OTP request response:", response);
+
+      // 3. Success → show modal / OTP input
+      setOtpOpen(true);
+    } catch (error: any) {
+      console.error("Failed to request OTP:", error);
+      alert(
+        error?.response?.data?.message ||
+        "Failed to send OTP. Please try again later."
+      );
+    }
   };
 
   const handleOrderSuccess = () => {

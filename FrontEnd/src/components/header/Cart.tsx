@@ -46,7 +46,7 @@ const CartDropdown: React.FC = () => {
               </div>
               <div className="details">
                 <Link href="/shop/details-profitable-business-makes-your-profit">
-                  <h5 className="title">{item.title}</h5>
+                  <h5 className="title" style={{ color:"black" }}>{item.title}</h5>
                 </Link>
                 <div className="number">
                   {item.quantity} <i className="fa-regular fa-x" />
@@ -61,7 +61,7 @@ const CartDropdown: React.FC = () => {
           <div className="bottom-content-deals mt--10">
             <div className="top">
               <span>Sub Total:</span>
-              <span className="number-c">${total.toFixed(2)}</span>
+              <span className="number-c">Rs. {total.toFixed(2)}</span>
             </div>
             {/* <div className="single-progress-area-incard">
               <div className="progress">

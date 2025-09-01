@@ -2,7 +2,7 @@
 import HeaderFour from "@/components/header/HeaderFour";
 import BannerFour from "@/components/banner/BannerFour";
 import BlogFour from "@/components/blog/BlogFour";
-import FooterOne from "@/components/footer/FooterOne";
+// // import FooterOne from "@/components/footer/FooterOne";
 import FeatureCategory from '@/components/feature/FeatureCategory';
 import BestSellingWrap from '@/components/product/BestSellingWrap';
 import FeatureDiscount from "@/components/product/FeatureDiscount";
@@ -17,7 +17,7 @@ export default function Home() {
     <div className="index-bg-gray">
       <HeaderFour />
       <BannerFour />
-      <FeatureCategory />
+      {/* <FeatureCategory /> */}
       <BestSellingWrap />
       <FeatureDiscount />
       <LessDiscount />
@@ -26,7 +26,7 @@ export default function Home() {
 
       <BlogFour />
       <ShortService />
-      <FooterOne />
+      {/* <FooterOne /> */}
 
     </div>
   );

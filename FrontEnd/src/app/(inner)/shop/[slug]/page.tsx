@@ -4,7 +4,7 @@ import { useState } from 'react';
 import HeaderFive from "@/components/header/HeaderFive";
 import ShortService from "@/components/service/ShortService";
 import RelatedProduct from "@/components/product/RelatedProduct";
-import FooterOne from "@/components/footer/FooterOne";
+// // import FooterOne from "@/components/footer/FooterOne";
 import Product from "@/data/Product.json";
 import { useParams } from 'next/navigation';
 
@@ -505,7 +505,7 @@ const CompareElements: React.FC = () => {
 
       <RelatedProduct />
       <ShortService />
-      <FooterOne />
+      {/* <FooterOne /> */}
       <ToastContainer />
     </div>
   );

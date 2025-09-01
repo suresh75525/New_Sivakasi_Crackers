@@ -4,7 +4,7 @@ import { useState, Suspense } from 'react';
 import ShopMain from "./ShopMain";
 import ShopMainList from "./ShopMainList";
 import Product from '@/data/Product.json';
-import FooterOne from "@/components/footer/FooterOne";
+// import FooterOne from "@/components/footer/FooterOne";
 import { useSearchParams } from 'next/navigation';
 
 interface PostType {
@@ -364,7 +364,7 @@ export default function Home() {
       <Suspense fallback={<div>Loading...</div>}>
         <ShopContent />
       </Suspense>
-      <FooterOne />
+      {/* <FooterOne /> */}
     </div>
   );
 }

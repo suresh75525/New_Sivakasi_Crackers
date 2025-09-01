@@ -1,0 +1,58 @@
+.categoryCard {
+  cursor: pointer;
+  text-decoration: none;
+  color: #222;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 8px 12px;
+  min-height: 40px;
+  font-weight: 500;
+  font-size: 1.1rem;
+  gap: 10px;
+  width: 100%;
+  max-width: 220px;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.categoryCard:hover {
+  background: #FF9900; /* light blue on hover */
+  transform: translateY(-2px); /* subtle lift */
+}
+
+.categoryLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.categoryIcon {
+  font-size: 1.3rem;
+  color: #0070f3;
+}
+
+.categoryLabel {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: bold;
+  font-size: 1.25rem;
+}
+
+.categoryBadge {
+  background: #0070f3;
+  color: #fff;
+  border-radius: 50%;
+  min-width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1rem;
+}

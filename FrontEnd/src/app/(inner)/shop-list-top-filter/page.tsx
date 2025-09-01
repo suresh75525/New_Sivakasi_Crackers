@@ -6,7 +6,7 @@ import ShopMainList from "./ShopMainList";
 import Product from '@/data/Product.json';
 
 
-import FooterOne from "@/components/footer/FooterOne";
+// import FooterOne from "@/components/footer/FooterOne";
 
 
 interface PostType {
@@ -308,7 +308,7 @@ export default function Home() {
 
 
 
-      <FooterOne />
+      {/* <FooterOne /> */}
 
     </div>
   );

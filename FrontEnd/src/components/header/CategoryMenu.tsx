@@ -23,7 +23,7 @@ function CategoryMenu() {
       const fetchData = async () => {
         try {
           const data: any = await getCategories();
-          const formattedData = data.map((item) => ({
+          const formattedData = data.map((item:any) => ({
             label: item.name,
             icon: "crackers.png", // you can map icons by category if you have them
             submenu: [], // keep empty for now unless backend gives subcategories
@@ -44,7 +44,7 @@ function CategoryMenu() {
         categories.map((item, index) => (
           <li key={index}>
             <a href="#" className="menu-item flex items-center gap-2">
-              <span>{item.label}</span>
+              <span>{item}</span>
             </a>
           </li>
         ))

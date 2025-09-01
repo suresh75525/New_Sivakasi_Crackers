@@ -10,6 +10,8 @@ const CartMain = () => {
   const [discount, setDiscount] = useState(0);
   const [couponMessage, setCouponMessage] = useState("");
   const [subtotal, setSubtotal] = useState(0);
+  const [loadingCheckout, setLoadingCheckout] = useState(false);
+
 
   useEffect(() => {
     const total = cartItems.reduce((acc, item) => {
@@ -275,8 +277,25 @@ const CartMain = () => {
                 </div>
 
                 <div className="button-area">
-                  <button className="rts-btn btn-primary">
-                    Proceed To Checkout
+                  <button
+                    className="rts-btn btn-primary"
+                    style={{ minWidth: "200px" }}
+                    disabled={subtotal <= 0 || loadingCheckout} // disable if cart empty or already loading
+                    onClick={() => {
+                      setLoadingCheckout(true);
+                      setTimeout(() => {
+                        window.location.href = "/checkout";
+                      }, 1200); // simulate delay to show loader
+                    }}
+                  >
+                    {loadingCheckout ? (
+                      <>
+                        <i className="fa fa-spinner fa-spin" style={{ marginRight: "8px" }} />
+                        Processing...
+                      </>
+                    ) : (
+                      "Proceed to Checkout"
+                    )}
                   </button>
                 </div>
               </div>

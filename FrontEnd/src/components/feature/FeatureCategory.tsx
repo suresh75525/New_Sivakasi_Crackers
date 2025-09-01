@@ -5,6 +5,8 @@ import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import { getCategories } from "../services/apiServices";
+import styles from "./FeaturedCategories.module.css";
+import ClearIcon from '@mui/icons-material/Clear';
 
 type Category = {
   id: number;
@@ -13,11 +15,14 @@ type Category = {
 };
 
 type FeaturedCategoriesProps = {
-  onCategorySelect: (categoryId: number) => void;
+  onCategorySelect: (categoryId: number | null) => void; // ✅ allow null
 };
 
-const FeaturedCategories: React.FC<FeaturedCategoriesProps> = ({ onCategorySelect }) => {
+const FeaturedCategories: React.FC<FeaturedCategoriesProps> = ({
+  onCategorySelect,
+}) => {
   const [categories, setCategories] = useState<Category[]>([]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -36,6 +41,7 @@ const FeaturedCategories: React.FC<FeaturedCategoriesProps> = ({ onCategorySelec
 
     fetchData();
   }, []);
+
   return (
     <div className="rts-category-area rts-section-gap">
       <div className="container">
@@ -44,24 +50,70 @@ const FeaturedCategories: React.FC<FeaturedCategoriesProps> = ({ onCategorySelec
             <div className="cover-card-main-over">
               <div className="row">
                 <div className="col-lg-12">
-                  <div className="title-area-between">
+                  <div
+                    className="title-area-between"
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      flexWrap: "nowrap",        // ✅ prevent wrapping
+                    }}
+                  >
+                    {/* Left: Title */}
                     <h2
                       className="title mb--0"
-                      style={{ fontWeight: "bold", color: "black" }}
+                      style={{
+                        fontWeight: "bold",
+                        color: "black",
+                        fontSize: "20px",
+                        whiteSpace: "nowrap",    // ✅ keep text on one line
+                      }}
                     >
                       Available Categories
                     </h2>
-                    <div className="next-prev-swiper-wrapper">
-                      <div className="swiper-button-prev">
-                        <i className="fa-regular fa-chevron-left"></i>
-                      </div>
-                      <div className="swiper-button-next">
-                        <i className="fa-regular fa-chevron-right"></i>
+
+                    {/* Right: Clear + Arrows */}
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "20px",
+                        flexShrink: 0,           // ✅ don’t let buttons squeeze title
+                      }}
+                    >
+                      <button
+                        onClick={() => onCategorySelect(null)} // ✅ reset filter
+                        style={{
+                          background: "transparent",
+                          border: "none",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "6px",
+                          fontSize: "1rem",
+                          fontWeight: "bold",
+                          color: "#d32f2f",
+                          whiteSpace: "nowrap",   // ✅ button text in one line
+                        }}
+                        title="Clear category filter"
+                      >
+                        <ClearIcon fontSize="medium" /> Clear All
+                      </button>
+
+                      <div className="next-prev-swiper-wrapper flex items-center gap-2">
+                        <div className="swiper-button-prev">
+                          <i className="fa-regular fa-chevron-left"></i>
+                        </div>
+                        <div className="swiper-button-next">
+                          <i className="fa-regular fa-chevron-right"></i>
+                        </div>
                       </div>
                     </div>
                   </div>
+
                 </div>
               </div>
+
               <div className="row">
                 <div className="col-lg-12">
                   <div className="rts-caregory-area-one">
@@ -91,71 +143,23 @@ const FeaturedCategories: React.FC<FeaturedCategoriesProps> = ({ onCategorySelec
                             {categories.map((category, index) => (
                               <SwiperSlide key={index}>
                                 <div
+                                  className={styles.categoryCard}
                                   onClick={() => onCategorySelect(category.id)}
-                                  style={{
-                                    cursor: "pointer",
-                                    textDecoration: "none",
-                                    color: "#222",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "space-between",
-                                    background: "#fff",
-                                    borderRadius: "12px",
-                                    boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-                                    padding: "8px 12px",
-                                    minHeight: "40px",
-                                    fontWeight: "500",
-                                    fontSize: "1.1rem",
-                                    gap: "10px",
-                                    width: "100%",
-                                    maxWidth: "220px",
-                                  }}
                                 >
-                                  {/* Left: Cart icon and category name */}
-                                  <span
-                                    style={{
-                                      display: "flex",
-                                      alignItems: "center",
-                                      gap: "8px",
-                                      minWidth: 0,
-                                    }}
-                                  >
+                                  {/* Left side: icon + label */}
+                                  <span className={styles.categoryLeft}>
                                     <i
-                                      className="fa fa-shopping-cart"
-                                      style={{
-                                        fontSize: "1.3rem",
-                                        color: "#0070f3",
-                                      }}
+                                      className={`fa fa-shopping-cart ${styles.categoryIcon}`}
                                     />
                                     <span
-                                      style={{
-                                        maxWidth: "120px",
-                                        overflow: "hidden",
-                                        textOverflow: "ellipsis",
-                                        whiteSpace: "nowrap",
-                                        fontWeight: "bold",
-                                        fontSize: "1.25rem", // increase category font size
-                                      }}
+                                      className={styles.categoryLabel}
                                       title={category.label}
                                     >
                                       {category.label}
                                     </span>
                                   </span>
-                                  {/* Right: Product count badge */}
-                                  <span
-                                    style={{
-                                      background: "#0070f3",
-                                      color: "#fff",
-                                      borderRadius: "50%",
-                                      minWidth: "28px",
-                                      height: "28px",
-                                      display: "flex",
-                                      alignItems: "center",
-                                      justifyContent: "center",
-                                      fontWeight: "bold",
-                                      fontSize: "1rem",
-                                    }}
-                                  >
+                                  {/* Right side: count */}
+                                  <span className={styles.categoryBadge}>
                                     {category.count}
                                   </span>
                                 </div>

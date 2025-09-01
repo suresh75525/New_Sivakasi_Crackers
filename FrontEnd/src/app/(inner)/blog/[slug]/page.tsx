@@ -1,7 +1,7 @@
 "use client"
 import HeaderFive from "@/components/header/HeaderFive";
 import ShortService from "@/components/service/ShortService";
-import FooterOne from "@/components/footer/FooterOne";
+// import FooterOne from "@/components/footer/FooterOne";
 import Posts from "@/data/Posts.json";
 import { useParams } from 'next/navigation';
 
@@ -224,7 +224,7 @@ export default function Home() {
       </div>
 
       <ShortService />
-      <FooterOne />
+      {/* <FooterOne /> */}
     </div>
 
 

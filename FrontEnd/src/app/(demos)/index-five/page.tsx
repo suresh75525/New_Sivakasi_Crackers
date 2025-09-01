@@ -16,7 +16,7 @@ export default function Home() {
         <div className="index-five">
             <HeaderFive />
             <BannerFive />
-            <FeatureCategory />
+            {/* <FeatureCategory /> */}
             <BestDiscount />
 
 

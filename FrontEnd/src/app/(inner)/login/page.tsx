@@ -8,7 +8,7 @@ import ServiceOne from "@/components/service/ServiceOne";
 import TestimonilsOne from "@/components/testimonials/TestimonilsOne";
 import ShortService from "@/components/service/ShortService";
 
-import FooterOne from "@/components/footer/FooterOne";
+// // import FooterOne from "@/components/footer/FooterOne";
 
 export default function Home() {
     return (
@@ -89,7 +89,7 @@ export default function Home() {
 
 
             <ShortService/>
-            <FooterOne />
+            {/* <FooterOne /> */}
 
         </div>
     );

@@ -198,7 +198,7 @@ function HeaderFive() {
     const fetchData = async () => {
       try {
         const data: any = await getCategories();
-        const formattedData = data.map((item) => ({
+        const formattedData = data.map((item:any) => ({
           label: item.name,
           icon: "crackers.png", // you can map icons by category if you have them
           submenu: [], // keep empty for now unless backend gives subcategories
@@ -369,7 +369,7 @@ function HeaderFive() {
                     <div className="category-btn category-hover-header">
                       {/* <img class="parent" src="/assets/images/icons/bar-1.svg" alt="icons"> */}
                       <span>All Categories</span>
-                      <CategoryMenu catData={categories} />
+                      <CategoryMenu />
                     </div>
                     <div className="nav-area">
                       <Nav />

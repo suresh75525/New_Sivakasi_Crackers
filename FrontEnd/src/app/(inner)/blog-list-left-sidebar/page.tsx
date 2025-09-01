@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import HeaderFive from '@/components/header/HeaderFive';
 import ShortService from '@/components/service/ShortService';
-import FooterOne from '@/components/footer/FooterOne';
+// import FooterOne from '@/components/footer/FooterOne';
 import BlogListMain from './BlogListMain';
 import Posts from '@/data/Posts.json';
 
@@ -317,7 +317,7 @@ export default function BlogGridPage() {
 
             {/* Footer */}
             <ShortService />
-            <FooterOne />
+            {/* <FooterOne /> */}
         </div>
     );
 }

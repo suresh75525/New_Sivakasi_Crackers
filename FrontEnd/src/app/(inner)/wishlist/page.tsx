@@ -2,7 +2,7 @@
 import HeaderFive from "@/components/header/HeaderFive";
 import ShortService from "@/components/service/ShortService";
 import CartMain from "./CartMain";
-import FooterOne from "@/components/footer/FooterOne";
+// import FooterOne from "@/components/footer/FooterOne";
 
 
 export default function Home() {
@@ -36,7 +36,7 @@ export default function Home() {
 
             <CartMain />
             <ShortService />
-            <FooterOne />
+            {/* <FooterOne /> */}
         </div>
     );
 }

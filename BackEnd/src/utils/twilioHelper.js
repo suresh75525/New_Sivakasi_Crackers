@@ -6,6 +6,10 @@ const client = twilio(
   process.env.TWILIO_AUTH_TOKEN
 );
 
+console.log("SID:", process.env.TWILIO_ACCOUNT_SID);
+console.log("TOKEN:", process.env.TWILIO_AUTH_TOKEN ? "SET" : "MISSING");
+console.log("FROM:", process.env.TWILIO_WHATSAPP_FROM);
+
 exports.sendWhatsApp = async (to, message) => {
   try {
     const res = await client.messages.create({

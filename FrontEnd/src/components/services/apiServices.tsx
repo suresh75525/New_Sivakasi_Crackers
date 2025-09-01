@@ -33,6 +33,23 @@ export const addToCart = async (product_id: number, quantity: number) => {
   return data;
 };
 
+// Request OTP
+export const requestOtp = async (mobile: string) => {
+  const { data } = await axioApi.post("/auth/otp/request", {
+    mobile,
+  });
+  return data;
+}
+
+// verify OTP
+export const verifyOtp = async (mobile: string, otp: string) => {
+  const { data } = await axioApi.post("/auth/otp/verify", {
+    mobile,
+    otp,
+  });
+  return data;
+}
+
 export const placeOrder = async ({
   name,
   mobile_number,

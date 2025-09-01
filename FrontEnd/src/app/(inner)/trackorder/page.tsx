@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import HeaderFive from "@/components/header/HeaderFive";
 import ShortService from "@/components/service/ShortService";
-import FooterOne from "@/components/footer/FooterOne";
+// import FooterOne from "@/components/footer/FooterOne";
 
 export default function Home() {
 
@@ -76,7 +76,7 @@ export default function Home() {
                 </div>
             </div>
             <ShortService />
-            <FooterOne />
+            {/* <FooterOne /> */}
         </div>
     );
 }

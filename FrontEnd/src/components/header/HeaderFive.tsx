@@ -158,10 +158,10 @@ function HeaderFive({ setSelectedCategoryId, externalSetSearchTerm }: { setSelec
                                   <i className="fa-regular fa-phone-volume" />
                                 </div>
                                 <div className="information">
-                                  <span>Phone Number</span>
-                                  <a href="#">
-                                    <p>6381497218</p>
-                                  </a>
+                                  <span style={{ color: "#FF9900", fontWeight: "bold" }}>Phone Number</span>
+
+                                  <p style={{ fontWeight:"bold", fontSize:"20px"}}>+91 98429 72802</p>
+
                                 </div>
                               </div>
                               <form
@@ -236,23 +236,13 @@ function HeaderFive({ setSelectedCategoryId, externalSetSearchTerm }: { setSelec
                               </form>
                             </div>
                             <div className="accont-wishlist-cart-area-header">
-                              <a
+                              {/* <a
                                 href="/account"
                                 className="btn-border-only account"
                               >
                                 <i className="fa-light fa-user" />
                                 Account
-                              </a>
-                              {/* <a
-                                href="/shop-compare"
-                                className="btn-border-only account compare-number"
-                              >
-                                <i className="fa-regular fa-code-compare"></i>
-                                <span className="number">
-                                  {compareItems.length}
-                                </span>
                               </a> */}
-                              {/* <WishList /> */}
                               <Cart />
                             </div>
                           </div>
