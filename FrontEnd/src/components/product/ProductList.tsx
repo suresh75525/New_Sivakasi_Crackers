@@ -13,7 +13,7 @@ type Product = {
   name: string;
   description?: string | null;
   price_per_unit: string;
-  original_price?: string;
+  original_price: string;
   image_url?: string;
   is_available: number;
   gst_percentage: string;
@@ -135,6 +135,7 @@ const ProductList: React.FC<ProductListProps> = ({
           const startIdx = (page - 1) * PRODUCTS_PER_PAGE;
           const endIdx = startIdx + PRODUCTS_PER_PAGE;
           const paginatedProducts = category.products.slice(startIdx, endIdx);
+          console.log("paginatedProducts", paginatedProducts);
           const totalPages = Math.ceil(
             category.total_products / PRODUCTS_PER_PAGE
           );
@@ -209,31 +210,36 @@ const ProductList: React.FC<ProductListProps> = ({
                             style={{
                               display: "flex",
                               alignItems: "center",
-                              gap: "8px",
+                              justifyContent: "center", // Center horizontally
+                              gap: "0px",
+                              fontWeight: "bold", // Make both spans bold
+                              width: "100%",
                             }}
                           >
-                            {product.original_price && (
-                              <span
-                                style={{
-                                  textDecoration: "line-through",
-                                  color: "#888",
-                                  fontSize: "1rem",
-                                }}
-                              >
-                                ₹{product.original_price}
-                              </span>
-                            )}
+                            <span
+                              style={{
+                                textDecoration: "line-through",
+                                color: "#888",
+                                fontSize: "1.1rem",
+                                fontWeight: "bold", // Bold
+                                textAlign: "center", // Center text
+                                minWidth: "70px",
+                              }}
+                            >
+                              ₹{product.original_price}
+                            </span>
                             <span
                               style={{
                                 color: "#e53935",
-                                fontWeight: "bold",
+                                fontWeight: "bold", // Bold
                                 fontSize: "1.1rem",
+                                textAlign: "center", // Center text
+                                minWidth: "70px",
                               }}
                             >
                               ₹{product.price_per_unit}
                             </span>
                           </div>
-
                           {product.is_available ? (
                             <span
                               className={`${styles.badge} ${styles.bestSeller}`}

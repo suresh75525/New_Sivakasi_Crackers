@@ -224,6 +224,7 @@ exports.getHomepageProducts = async (req, res) => {
         p.image_url,
         p.is_available,
         p.gst_percentage,
+        p.original_price,
         c.name AS category_name
       FROM products p
       JOIN categories c ON p.category_id = c.category_id

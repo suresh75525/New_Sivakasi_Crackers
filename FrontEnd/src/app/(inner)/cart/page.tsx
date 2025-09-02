@@ -2,6 +2,7 @@
 import HeaderFive from "@/components/header/HeaderFive";
 import ShortService from "@/components/service/ShortService";
 import CartMain from "./CartMain";
+import Link from "next/link";
 // // import FooterOne from "@/components/footer/FooterOne";
 
 export default function Home() {
@@ -14,11 +15,11 @@ export default function Home() {
             <div className="row">
               <div className="col-lg-12">
                 <div className="navigator-breadcrumb-wrapper">
-                  <a href="index.html">Home</a>
+                  <Link href="/">Home</Link>
                   <i className="fa-regular fa-chevron-right" />
-                  <a className="current" href="index.html">
+                  <span className="current" style={{ marginLeft: 6 }}>
                     My Cart
-                  </a>
+                  </span>
                 </div>
               </div>
             </div>

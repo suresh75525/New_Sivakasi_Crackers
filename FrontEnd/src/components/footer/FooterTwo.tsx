@@ -2,178 +2,149 @@ import React from "react";
 
 function FooterTwo() {
   return (
-    <div>
-      <>
-        {/* rts footer area start */}
-        <div className="rts-footer-area-two">
-          <div className="container-2">
-            <div className="row">
-              <div className="coll-lg-12">
-                <div className="footer-two-main-wrapper">
-                  <div className="footer-single-wixed-two start">
-                    <a href="#" className="logo-area">
-                      <img
-                        src="assets/images/logo/siv_logo_svg.svg"
-                        alt="logo-area"
-                        className="logo"
-                      />
-                    </a>
-                    <p className="disc">
-                      What’s inside: New Arrivals, Exclusive Sales, News &amp;
-                      Mores
-                    </p>
-                    <form action="#">
-                      <input type="email" placeholder="Email Address" />
-                      <button className="rts-btn btn-primary">
-                        <i className="fa-light fa-arrow-right" />
-                      </button>
-                    </form>
-                    <div className="social-style-dash d-none">
-                      <ul>
-                        <li>
-                          <a href="#">
-                            <i className="fa-brands fa-facebook-f" />
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#">
-                            <i className="fa-brands fa-twitter" />
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#">
-                            <i className="fa-brands fa-linkedin-in" />
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#">
-                            <i className="fa-brands fa-youtube" />
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#">
-                            <i className="fa-brands fa-instagram" />
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div className="single-footer-wized mid d-none">
-                    <h3 className="footer-title">Our Stores</h3>
-                    <div className="footer-nav">
-                      <ul>
-                        <li>
-                          <a href="#">Delivery Information</a>
-                        </li>
-                        <li>
-                          <a href="#">Privacy Policy</a>
-                        </li>
-                        <li>
-                          <a href="#">Terms &amp; Conditions</a>
-                        </li>
-                        <li>
-                          <a href="#">Support Center</a>
-                        </li>
-                        <li>
-                          <a href="#">Careers</a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div className="single-footer-wized mid d-none">
-                    <h3 className="footer-title">Shop Categories</h3>
-                    <div className="footer-nav">
-                      <ul>
-                        <li>
-                          <a href="#">Contact Us</a>
-                        </li>
-                        <li>
-                          <a href="#">Information</a>
-                        </li>
-                        <li>
-                          <a href="#">About Us</a>
-                        </li>
-                        <li>
-                          <a href="#">Careers</a>
-                        </li>
-                        <li>
-                          <a href="#">Nest Stories</a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div className="single-footer-wized">
-                    <h3 className="footer-title">Need Help? / Contact Us</h3>
-                    <div className="contact-information">
-                      {/* single contact information */}
-                      <div className="single-contact-information-area">
-                        <div className="icon-area">
-                          <img src="assets/images/icons/11.svg" alt="icons" />
-                        </div>
-                        <div className="information-area">
-                          <p className="disc">
-                            Sivakasi Crackers <br />
-                            Sivakasi
-                          </p>
-                        </div>
-                      </div>
-                      {/* single contact information emd */}
-                      {/* single contact information */}
-                      <div className="single-contact-information-area">
-                        <div className="icon-area">
-                          <img src="assets/images/icons/12.svg" alt="icons" />
-                        </div>
-                        <div className="information-area">
-                          <p className="disc">
-                            Call us between 8:00 AM - 10PM <br />
-                            <a href="#">6381497218</a>
-                          </p>
-                        </div>
-                      </div>
-                      {/* single contact information emd */}
-                      {/* single contact information */}
-                      <div className="single-contact-information-area">
-                        <div className="icon-area">
-                          <img src="assets/images/icons/13.svg" alt="icons" />
-                        </div>
-                        <div className="information-area">
-                          <p className="disc">
-                            Live Chat <br />
-                            <span>Chat With an Experts</span>
-                          </p>
-                        </div>
-                      </div>
-                      {/* single contact information emd */}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        {/* rts footer area end */}
-        {/* rts copyright area start */}
-        <div className="rts-copyright-area-two">
+    <>
+      <style>
+        {`
+          @media (min-width: 768px) {
+            .footer-two-main-wrapper,
+            .footer-two-main-wrapper span,
+            .footer-two-main-wrapper a,
+            .footer-title,
+            .copyright-arae-two-wrapper p {
+              font-size: 1.25rem !important;
+            }
+            .footer-logo-img {
+              width: 70px !important;
+              height: 55px !important;
+            }
+          }
+        `}
+      </style>
+      <div style={{ padding: "8px 0" }}>
+        <div className="rts-footer-area-two" style={{ padding: "8px 0" }}>
           <div className="container-2">
             <div className="row">
               <div className="col-lg-12">
-                <div className="copyright-arae-two-wrapper">
-                  <p className="disc">
-                    Copyright 2025 <a href="#">©Sivakasi Crackers</a>. All
-                    rights reserved.
-                  </p>
-                  <div className="payment-processw-area d-none">
-                    <span>Payment Accepts:</span>
-                    <img src="assets/images/payment/04.png" alt="payment" />
+                <div
+                  className="footer-two-main-wrapper"
+                  style={{
+                    padding: "0",
+                    textAlign: "center",
+                    width: "100%",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontWeight: "bold",
+                      fontSize: "1.2rem",
+                      marginBottom: "8px",
+                      width: "100%",
+                    }}
+                  >
+                    <h3> Contact Us </h3>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      gap: "16px",
+                      marginBottom: "8px",
+                      width: "100%",
+                    }}
+                  >
+                    <span
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        fontSize: "1rem",
+                      }}
+                    >
+                      <img
+                        src="assets/images/icons/13.svg"
+                        alt="mail"
+                        style={{ width: "20px", height: "20px" }}
+                        className="footer-logo-img"
+                      />
+                      <a
+                        href="mailto:info@jayavardhencracker.com"
+                        style={{
+                          color: "#FF9900",
+                          fontWeight: "bold",
+                          wordBreak: "break-all",
+                        }}
+                      >
+                        info@jayavardhencracker.com
+                      </a>
+                    </span>
+                    <span
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        fontSize: "1rem",
+                      }}
+                    >
+                      <img
+                        src="assets/images/icons/12.svg"
+                        alt="mobile"
+                        style={{ width: "20px", height: "20px" }}
+                        className="footer-logo-img"
+                      />
+                      <a
+                        href="tel:6381497218"
+                        style={{ color: "#FF9900", fontWeight: "bold" }}
+                      >
+                        +919842972802
+                      </a>
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      gap: "10px",
+                      marginBottom: "8px",
+                      width: "100%",
+                    }}
+                  >
+                    <img
+                      src="assets/images/logo/siv_logo_svg.svg"
+                      alt="logo-area"
+                      style={{ width: "70px", height: "40px" }}
+                      className="footer-logo-img"
+                    />
+                    <span style={{ fontWeight: "bold", fontSize: "1.1rem" }}>
+                      Sivakasi Crackers
+                    </span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        {/* rts copyright area end */}
-      </>
-    </div>
+        <div className="rts-copyright-area-two" style={{ padding: "8px 0" }}>
+          <div className="container-2">
+            <div className="row">
+              <div className="col-lg-12">
+                <div
+                  className="copyright-arae-two-wrapper"
+                  style={{ textAlign: "center" }}
+                >
+                  <p className="disc" style={{ margin: 0 }}>
+                    Copyright 2025 <a href="#">©Jayavardhencracker.com</a>. All
+                    rights reserved.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
 

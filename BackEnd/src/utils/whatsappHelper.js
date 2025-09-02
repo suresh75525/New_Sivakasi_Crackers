@@ -1,16 +1,17 @@
-// utils/whatsappHelper.js
-const fs = require("fs");
+const twilio = require("twilio");
 
-async function sendWhatsAppMessageWithPDF(to, message, pdfPath) {
-  if (!fs.existsSync(pdfPath)) throw new Error("PDF not found");
+const client = twilio(
+  process.env.TWILIO_ACCOUNT_SID,
+  process.env.TWILIO_AUTH_TOKEN
+);
 
-  // 🔥 In real integration -> Call WhatsApp Cloud API
-  console.log("📩 WhatsApp Message Sent:");
-  console.log("To:", to);
-  console.log("Message:", message);
-  console.log("PDF Attached:", pdfPath);
-
-  return true;
+async function sendWhatsAppMessage(to, message) {
+  await client.messages.create({
+    from: process.env.TWILIO_WHATSAPP_FROM,
+    to,
+    body: message,
+  });
+  console.log("WhatsApp message sent to:", to);
 }
 
-module.exports = { sendWhatsAppMessageWithPDF };
+module.exports = { sendWhatsAppMessage };

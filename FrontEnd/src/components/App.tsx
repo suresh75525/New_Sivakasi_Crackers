@@ -16,6 +16,7 @@ type Product = {
   name: string;
   description?: string | null;
   price_per_unit: string;
+  original_price: string;
   image_url?: string;
   is_available: number;
   gst_percentage: string;

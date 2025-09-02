@@ -7,7 +7,10 @@ import ShopMainList from "./ShopMainList";
 // // import FooterOne from "@/components/footer/FooterOne";
 // import FooterOne from "../../components/fo";
 import { useSearchParams } from "next/navigation";
-import { getCategories, getProducts } from "../../../components/services/apiServices";
+import {
+  getCategories,
+  getProducts,
+} from "../../../components/services/apiServices";
 
 function ShopContent() {
   const searchParams = useSearchParams();
@@ -50,6 +53,7 @@ function ShopContent() {
             image: postdata.image_url,
             productTitle: postdata.name,
             price: postdata.price_per_unit,
+            originalPrice: postdata.original_price,
           }));
         setProducts(filterProducts);
       } catch (error) {

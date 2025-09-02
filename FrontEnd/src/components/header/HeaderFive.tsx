@@ -14,7 +14,13 @@ type Category = { id: number; name: string };
 type Product = { id: number; name: string };
 type Suggestion = { label: string; type: "category" | "product"; id: number };
 
-function HeaderFive({ setSelectedCategoryId, externalSetSearchTerm }: { setSelectedCategoryId?: (id: number) => void, externalSetSearchTerm?: (term: string) => void }) {
+function HeaderFive({
+  setSelectedCategoryId,
+  externalSetSearchTerm,
+}: {
+  setSelectedCategoryId?: (id: number) => void;
+  externalSetSearchTerm?: (term: string) => void;
+}) {
   const { compareItems } = useCompare();
   const [isSticky, setIsSticky] = useState(false);
 
@@ -47,19 +53,30 @@ function HeaderFive({ setSelectedCategoryId, externalSetSearchTerm }: { setSelec
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    getCategories().then(data => setCategories(data));
-    getProducts().then(data => setProducts(data));
+    getCategories().then((data) => setCategories(data));
+    getProducts().then((data) => setProducts(data));
   }, []);
 
   useEffect(() => {
     if (searchTerm.trim().length > 0) {
       const categorySuggestions = categories
-        .filter(cat => cat.name.toLowerCase().includes(searchTerm.toLowerCase()))
-        .map(cat => ({ label: cat.name, type: "category", id: cat.id } as const));
+        .filter((cat) =>
+          cat.name.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+        .map(
+          (cat) => ({ label: cat.name, type: "category", id: cat.id } as const)
+        );
       const productSuggestions = products
-        .filter(prod => prod.name.toLowerCase().includes(searchTerm.toLowerCase()))
-        .map(prod => ({ label: prod.name, type: "product", id: prod.id } as const));
-      setSuggestions([...categorySuggestions, ...productSuggestions].slice(0, 8));
+        .filter((prod) =>
+          prod.name.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+        .map(
+          (prod) =>
+            ({ label: prod.name, type: "product", id: prod.id } as const)
+        );
+      setSuggestions(
+        [...categorySuggestions, ...productSuggestions].slice(0, 8)
+      );
       setShowSuggestions(true);
     } else {
       setSuggestions([]);
@@ -83,7 +100,10 @@ function HeaderFive({ setSelectedCategoryId, externalSetSearchTerm }: { setSelec
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (inputRef.current && !inputRef.current.contains(event.target as Node)) {
+      if (
+        inputRef.current &&
+        !inputRef.current.contains(event.target as Node)
+      ) {
         setShowSuggestions(false);
       }
     };
@@ -158,10 +178,23 @@ function HeaderFive({ setSelectedCategoryId, externalSetSearchTerm }: { setSelec
                                   <i className="fa-regular fa-phone-volume" />
                                 </div>
                                 <div className="information">
-                                  <span style={{ color: "#FF9900", fontWeight: "bold" }}>Phone Number</span>
+                                  <span
+                                    style={{
+                                      color: "#FF9900",
+                                      fontWeight: "bold",
+                                    }}
+                                  >
+                                    Phone Number
+                                  </span>
 
-                                  <p style={{ fontWeight:"bold", fontSize:"20px"}}>+91 98429 72802</p>
-
+                                  <p
+                                    style={{
+                                      fontWeight: "bold",
+                                      fontSize: "20px",
+                                    }}
+                                  >
+                                    +91 98429 72802
+                                  </p>
                                 </div>
                               </div>
                               <form
@@ -222,9 +255,13 @@ function HeaderFive({ setSelectedCategoryId, externalSetSearchTerm }: { setSelec
                                           padding: "8px 12px",
                                           cursor: "pointer",
                                           color:
-                                            suggestion.type === "category" ? "#0070f3" : "#222",
+                                            suggestion.type === "category"
+                                              ? "#0070f3"
+                                              : "#222",
                                           fontWeight:
-                                            suggestion.type === "category" ? "bold" : "normal",
+                                            suggestion.type === "category"
+                                              ? "bold"
+                                              : "normal",
                                         }}
                                       >
                                         {suggestion.label}
@@ -232,7 +269,6 @@ function HeaderFive({ setSelectedCategoryId, externalSetSearchTerm }: { setSelec
                                     ))}
                                   </ul>
                                 )}
-
                               </form>
                             </div>
                             <div className="accont-wishlist-cart-area-header">
@@ -255,8 +291,9 @@ function HeaderFive({ setSelectedCategoryId, externalSetSearchTerm }: { setSelec
             </div>
           </div>
           <div
-            className={`rts-header-nav-area-one  header-four header--sticky  ${isSticky ? "sticky" : ""
-              }`}
+            className={`rts-header-nav-area-one  header-four header--sticky  ${
+              isSticky ? "sticky" : ""
+            }`}
             style={{ paddingTop: 8, paddingBottom: 8 }}
           >
             <div className="container">

@@ -198,7 +198,7 @@ function HeaderFive() {
     const fetchData = async () => {
       try {
         const data: any = await getCategories();
-        const formattedData = data.map((item:any) => ({
+        const formattedData = data.map((item: any) => ({
           label: item.name,
           icon: "crackers.png", // you can map icons by category if you have them
           submenu: [], // keep empty for now unless backend gives subcategories

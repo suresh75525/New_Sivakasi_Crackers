@@ -8,9 +8,9 @@ const Order = require("../models/Order");
 const OrderItem = require("../models/OrderItem");
 const Address = require("../models/Address");
 const Invoice = require("../models/Invoice");
+const { sendWhatsAppMessage } = require("../utils/whatsappHelper");
 
 const { generateInvoice } = require("../utils/invoiceGenerator");
-const { sendWhatsAppMessageWithPDF } = require("../utils/whatsappHelper");
 const { devLog } = require("../utils/logger");
 
 exports.placeOrder = async (req, res) => {
@@ -109,8 +109,13 @@ exports.placeOrder = async (req, res) => {
       { transaction: t }
     );
 
-    const deletedCount = await GuestCart.destroy({ where: { session_id }, transaction: t });
-    console.log(`Deleted guest cart records: ${deletedCount} for session_id: ${session_id}`);
+    const deletedCount = await GuestCart.destroy({
+      where: { session_id },
+      transaction: t,
+    });
+    console.log(
+      `Deleted guest cart records: ${deletedCount} for session_id: ${session_id}`
+    );
 
     // ✅ COMMIT FIRST
     await t.commit();
@@ -123,11 +128,27 @@ exports.placeOrder = async (req, res) => {
         pdf_url: `/ invoices / ${path.basename(pdfPath)}`,
       }); // no tx
 
-      await sendWhatsAppMessageWithPDF(
-        process.env.ADMIN_WHATSAPP,
-        `🧾 New Order Placed!\nOrder ID: ${order.order_id}\nCustomer: ${name}(${mobile_number})`,
-        pdfPath
-      );
+      // await sendWhatsAppMessage(
+      //   process.env.TWILIO_WHATSAPP_TO,
+      //   [
+      //     "Congratulations! You have a new order.",
+      //     "----------------------------------",
+      //     "Customer Details",
+      //     `Name: ${name}    Mob No: ${mobile_number}`,
+      //     `Address: ${address_line1}    City: ${city}`,
+      //     `Pincode: ${pincode}    Landmark: ${landmark}`,
+      //     "----------------------------------",
+      //     "S.No   Product Name   Quantity   Price",
+      //     cartItems
+      //       .map(
+      //         (item, idx) =>
+      //           `${idx + 1}. ${item.Product.name}   ${item.quantity}   ₹${
+      //             item.Product.price_per_unit
+      //           }`
+      //       )
+      //       .join("\n"),
+      //   ].join("\n")
+      // );
     } catch (sideEffectErr) {
       console.error(
         "⚠️ Post-commit step failed (invoice/WhatsApp):",
@@ -143,7 +164,7 @@ exports.placeOrder = async (req, res) => {
   } catch (error) {
     try {
       await t.rollback();
-    } catch { }
+    } catch {}
     console.error("❌ placeOrder error:", error);
     return res.status(500).json({ message: "Server error" });
   }

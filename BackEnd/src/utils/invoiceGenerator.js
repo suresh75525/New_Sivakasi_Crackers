@@ -213,46 +213,54 @@ function footer(doc) {
 }
 
 // ---------- main ----------
+// ...existing code...
+
 async function generateInvoice(orderId) {
-  // fetch data
+  // fetch data with Product join
+  const Product = require("../models/Product");
   const order = await Order.findByPk(orderId, {
     include: [
       { model: User, attributes: ["name", "mobile_number"] },
-      { model: OrderItem },
+      {
+        model: OrderItem,
+        include: [
+          {
+            model: Product,
+            attributes: [
+              "product_id",
+              "name",
+              "price_per_unit",
+              "original_price",
+            ],
+          },
+        ],
+      },
     ],
   });
   if (!order) throw new Error("Order not found for invoice");
   const addr = await Address.findOne({ where: { order_id: orderId } });
 
   // compute totals
-  let subtotal = 0,
-    discount = 0,
-    gst = 0;
+  let total = 0,
+    discount = 0;
   const rows = order.OrderItems.map((oi) => {
     const qty = Number(oi.quantity || 0);
-    const aprU = Number(oi.price_per_unit || 0);
-    const disL = Number(oi.discount_amount || 0); // line discount Rs
-    const gstP = Number(oi.gst_percentage || 0);
-
-    subtotal += aprU * qty;
-    discount += disL;
-    const baseAfterDiscount = aprU * qty - disL;
-    const gstAmt =
-      oi.gst_amount != null
-        ? Number(oi.gst_amount)
-        : (baseAfterDiscount * gstP) / 100;
-    gst += gstAmt;
+    const actualPrice = Number(oi.Product?.price_per_unit || 0); // Actual Price
+    const offerPrice = Number(oi.Product?.original_price || 0); // Offer Price
+    console.log("hhufhdsf", actualPrice, offerPrice);
+    total += actualPrice * qty;
+    discount += offerPrice * qty;
 
     return {
-      product_name: oi.product_name,
+      product_name: oi.Product?.name || oi.product_name,
       quantity: qty,
-      price_per_unit: aprU,
-      discount_amount: disL,
-      gst_percentage: gstP,
+      price_per_unit: actualPrice,
+      original_price: offerPrice,
     };
   });
 
-  const net = subtotal - discount + gst;
+  const gst = 0;
+  const net = total - discount;
 
   // output
   const dir = path.join(__dirname, "..", "invoices");
@@ -277,10 +285,8 @@ async function generateInvoice(orderId) {
     260,
     78
   );
-  doc.text(`Order Status: ${order.order_status}`, 480, 78, { align: "left" });
 
   let y = 104;
-  // thin divider
   doc
     .moveTo(32, y)
     .lineTo(doc.page.width - 32, y)
@@ -289,7 +295,6 @@ async function generateInvoice(orderId) {
     .stroke();
   y += 12;
 
-  // customer block
   y = drawCustomerBlock(doc, y, order, addr);
 
   // table
@@ -298,8 +303,7 @@ async function generateInvoice(orderId) {
   y = tableRows(doc, y, th.cols, rows);
 
   // totals
-  y += 18;
-  y = totalsPanel(doc, y, { subtotal, discount, gst, net });
+  y = totalsPanel(doc, y, { subtotal: total, discount, gst, net });
 
   // footer
   footer(doc);
@@ -307,5 +311,7 @@ async function generateInvoice(orderId) {
   doc.end();
   return filePath;
 }
+
+// ...existing code...
 
 module.exports = { generateInvoice };

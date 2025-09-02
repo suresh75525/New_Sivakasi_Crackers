@@ -1,23 +1,24 @@
 "use client";
 
 import React, { useState } from "react";
-import OtpPopup from "./OtpPopup";
 import { useCart } from "@/components/header/CartContext";
-import { requestOtp } from "@/components/services/apiServices";
 import TextField from "@mui/material/TextField";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+import { placeOrder } from "@/components/services/apiServices";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function CheckOutMain() {
   const { cartItems } = useCart();
   const [isPincodeValid, setIsPincodeValid] = useState(false);
-  const [otpOpen, setOtpOpen] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
-  // Example: Get session_id from localStorage (replace with your actual session logic)
+
   const session_id =
     typeof window !== "undefined"
       ? localStorage.getItem("session_id") || ""
       : "";
+
+  const router = useRouter();
   const [billingInfo, setBillingInfo] = useState({
     name: "",
     mobile: "",
@@ -27,6 +28,7 @@ export default function CheckOutMain() {
     pincode: "",
     landmark: "",
   });
+
   const resetBillingInfo = () => {
     setBillingInfo({
       name: "",
@@ -49,26 +51,41 @@ export default function CheckOutMain() {
       return;
     }
 
+    // 2. Construct payload
+    const payload = {
+      session_id,
+      name: billingInfo.name,
+      mobile_number: billingInfo.mobile,
+      address_line1: billingInfo.address1,
+      address_line2: billingInfo.address2,
+      city: billingInfo.city,
+      pincode: billingInfo.pincode,
+      landmark: billingInfo.landmark,
+    };
+
     try {
-      // 2. Call OTP request API
-      const response = await requestOtp(billingInfo.mobile); // assuming billingInfo has mobile
-      console.log("OTP request response:", response);
-
-      // 3. Success → show modal / OTP input
-      setOtpOpen(true);
-    } catch (error: any) {
-      console.error("Failed to request OTP:", error);
-      alert(
-        error?.response?.data?.message ||
-        "Failed to send OTP. Please try again later."
-      );
+      const result = await placeOrder(payload);
+      if (result.message === "Order placed successfully") {
+        toast.success(result.message);
+        sessionStorage.removeItem("session_id");
+        localStorage.removeItem("cartItems");
+        router.push("/"); // Redirect to home page
+      } else {
+        toast.error("Order failed. Please try again.", {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+          theme: "colored",
+        });
+      }
+    } catch (error) {
+      toast.error("Network error. Please try again.", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: true,
+        theme: "colored",
+      });
     }
-  };
-
-  const handleOrderSuccess = () => {
-    resetBillingInfo();
-    setOrderSuccess(true);
-    setTimeout(() => setOrderSuccess(false), 3000);
   };
 
   const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -155,7 +172,7 @@ export default function CheckOutMain() {
               margin="normal"
               size="medium"
               InputProps={{
-                sx: { height: 36 }, // set your desired height
+                sx: { height: 36 },
               }}
               InputLabelProps={{
                 sx: { fontSize: "1.15rem", fontWeight: "bold" },
@@ -176,7 +193,7 @@ export default function CheckOutMain() {
                 inputProps={{ maxLength: 10 }}
                 size="medium"
                 InputProps={{
-                  sx: { height: 36 }, // set your desired height
+                  sx: { height: 36 },
                 }}
                 InputLabelProps={{
                   sx: { fontSize: "1.15rem", fontWeight: "bold" },
@@ -193,7 +210,7 @@ export default function CheckOutMain() {
                 fullWidth
                 margin="normal"
                 InputProps={{
-                  sx: { height: 36 }, // set your desired height
+                  sx: { height: 36 },
                 }}
                 InputLabelProps={{
                   sx: { fontSize: "1.15rem", fontWeight: "bold" },
@@ -211,7 +228,7 @@ export default function CheckOutMain() {
                 fullWidth
                 margin="normal"
                 InputProps={{
-                  sx: { height: 36 }, // set your desired height
+                  sx: { height: 36 },
                 }}
                 InputLabelProps={{
                   sx: { fontSize: "1.15rem", fontWeight: "bold" },
@@ -228,7 +245,7 @@ export default function CheckOutMain() {
                 fullWidth
                 margin="normal"
                 InputProps={{
-                  sx: { height: 36 }, // set your desired height
+                  sx: { height: 36 },
                 }}
                 InputLabelProps={{
                   sx: { fontSize: "1.15rem", fontWeight: "bold" },
@@ -247,7 +264,7 @@ export default function CheckOutMain() {
                 fullWidth
                 margin="normal"
                 InputProps={{
-                  sx: { height: 36 }, // set your desired height
+                  sx: { height: 36 },
                 }}
                 InputLabelProps={{
                   sx: { fontSize: "1.15rem", fontWeight: "bold" },
@@ -263,7 +280,7 @@ export default function CheckOutMain() {
                 fullWidth
                 margin="normal"
                 InputProps={{
-                  sx: { height: 36 }, // set your desired height
+                  sx: { height: 36 },
                 }}
                 InputLabelProps={{
                   sx: { fontSize: "1.15rem", fontWeight: "bold" },
@@ -316,21 +333,6 @@ export default function CheckOutMain() {
           </div>
         </form>
       </div>
-      <OtpPopup
-        open={otpOpen}
-        onClose={() => setOtpOpen(false)}
-        onOrderSuccess={handleOrderSuccess}
-        payload={{
-          session_id,
-          name: billingInfo.name,
-          mobile_number: billingInfo.mobile,
-          address_line1: billingInfo.address1,
-          address_line2: billingInfo.address2,
-          city: billingInfo.city,
-          pincode: billingInfo.pincode,
-          landmark: billingInfo.landmark,
-        }}
-      />
       <ToastContainer position="top-right" />
       {orderSuccess && (
         <div
