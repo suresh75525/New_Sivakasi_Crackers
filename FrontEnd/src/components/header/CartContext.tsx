@@ -14,6 +14,7 @@ type CartItem = {
   price: number;
   quantity: number;
   active: boolean;
+  offerPrice: number;
 };
 
 type CartContextType = {

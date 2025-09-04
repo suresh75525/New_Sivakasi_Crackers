@@ -78,6 +78,8 @@ exports.placeOrder = async (req, res) => {
       const price = parseFloat(item.Product.price_per_unit);
       const gstPct = parseFloat(item.Product.gst_percentage) || 0;
       const qty = item.quantity;
+      const discount = price * qty * 0.73;
+
       const gstAmt = (price * qty * gstPct) / 100;
 
       await OrderItem.create(
@@ -87,7 +89,7 @@ exports.placeOrder = async (req, res) => {
           product_name: item.Product.name,
           quantity: qty,
           price_per_unit: price,
-          discount_amount: 0,
+          discount_amount: price - discount,
           gst_percentage: gstPct,
           gst_amount: gstAmt,
         },
@@ -128,27 +130,27 @@ exports.placeOrder = async (req, res) => {
         pdf_url: `/ invoices / ${path.basename(pdfPath)}`,
       }); // no tx
 
-      // await sendWhatsAppMessage(
-      //   process.env.TWILIO_WHATSAPP_TO,
-      //   [
-      //     "Congratulations! You have a new order.",
-      //     "----------------------------------",
-      //     "Customer Details",
-      //     `Name: ${name}    Mob No: ${mobile_number}`,
-      //     `Address: ${address_line1}    City: ${city}`,
-      //     `Pincode: ${pincode}    Landmark: ${landmark}`,
-      //     "----------------------------------",
-      //     "S.No   Product Name   Quantity   Price",
-      //     cartItems
-      //       .map(
-      //         (item, idx) =>
-      //           `${idx + 1}. ${item.Product.name}   ${item.quantity}   ₹${
-      //             item.Product.price_per_unit
-      //           }`
-      //       )
-      //       .join("\n"),
-      //   ].join("\n")
-      // );
+      await sendWhatsAppMessage(
+        process.env.TWILIO_WHATSAPP_TO,
+        [
+          "Congratulations! You have a new order.",
+          "----------------------------------",
+          "Customer Details",
+          `Name: ${name}    Mob No: ${mobile_number}`,
+          `Address: ${address_line1}    City: ${city}`,
+          `Pincode: ${pincode}    Landmark: ${landmark}`,
+          "----------------------------------",
+          "S.No   Product Name   Quantity   Price",
+          cartItems
+            .map(
+              (item, idx) =>
+                `${idx + 1}. ${item.Product.name}   ${item.quantity}   ₹${
+                  item.Product.price_per_unit
+                }`
+            )
+            .join("\n"),
+        ].join("\n")
+      );
     } catch (sideEffectErr) {
       console.error(
         "⚠️ Post-commit step failed (invoice/WhatsApp):",
@@ -167,5 +169,43 @@ exports.placeOrder = async (req, res) => {
     } catch {}
     console.error("❌ placeOrder error:", error);
     return res.status(500).json({ message: "Server error" });
+  }
+};
+
+exports.getOrderDtls = async (req, res) => {
+  try {
+    const orders = await Order.findAll({
+      attributes: ["order_id"],
+      include: [
+        {
+          model: OrderItem,
+          attributes: [
+            "product_name",
+            "quantity",
+            "price_per_unit",
+            "discount_amount",
+          ],
+        },
+        {
+          model: Address,
+          attributes: [
+            "address_line1",
+            "address_line2",
+            "city",
+            "pincode",
+            "landmark",
+          ],
+        },
+        {
+          model: Invoice,
+          attributes: ["pdf_url"],
+        },
+      ],
+    });
+
+    res.json({ orders });
+  } catch (error) {
+    console.error("❌ Error in getOrderDtls:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };

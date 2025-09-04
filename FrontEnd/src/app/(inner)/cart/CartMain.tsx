@@ -7,9 +7,7 @@ import Link from "next/link";
 const CartMain = () => {
   const { cartItems, removeFromCart, updateItemQuantity } = useCart();
 
-  const [coupon, setCoupon] = useState("");
   const [discount, setDiscount] = useState(0);
-  const [couponMessage, setCouponMessage] = useState("");
   const [subtotal, setSubtotal] = useState(0);
   const [loadingCheckout, setLoadingCheckout] = useState(false);
 
@@ -22,30 +20,13 @@ const CartMain = () => {
     setSubtotal(total);
   }, [cartItems]);
 
-  const applyCoupon = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (coupon === "12345") {
-      setDiscount(0.25);
-      setCouponMessage("Coupon applied -25% successfully");
-      localStorage.setItem("coupon", coupon);
-      localStorage.setItem("discount", "0.25");
-    } else {
-      setDiscount(0);
-      setCouponMessage("Coupon code is incorrect");
-      localStorage.removeItem("coupon");
-      localStorage.removeItem("discount");
-    }
-  };
-
   const clearCart = () => {
     if (typeof window !== "undefined") {
       localStorage.removeItem("cartItems");
       localStorage.removeItem("coupon");
       localStorage.removeItem("discount");
     }
-    setCoupon("");
     setDiscount(0);
-    setCouponMessage("");
     cartItems.forEach((item) => removeFromCart(item.id));
   };
 
@@ -152,57 +133,44 @@ const CartMain = () => {
                       position: "sticky",
                       top: 0,
                       zIndex: 2,
-                      display: "flex", // <-- ensure this is here
-                      minWidth: 500,
                     }}
                   >
-                    <div
-                      className="product-main"
-                      style={{ flex: 2, textAlign: "center" }}
-                    >
+                    <div className="product-main">
                       <p style={{ color: "white", fontWeight: "bold" }}>
                         Products
                       </p>
                     </div>
-                    <div
-                      className="price"
-                      style={{ flex: 1, textAlign: "center" }}
-                    >
+                    <div className="price">
                       <p style={{ color: "white", fontWeight: "bold" }}>
                         Price (Rs.)
                       </p>
                     </div>
-                    <div
-                      className="quantity"
-                      style={{ flex: 1, textAlign: "center" }}
-                    >
+                    <div className="quantity">
                       <p style={{ color: "white", fontWeight: "bold" }}>
                         Quantity
                       </p>
                     </div>
-                    <div
-                      className="subtotal"
-                      style={{ flex: 1, textAlign: "center" }}
-                    >
+                    <div className="subtotal">
                       <p style={{ color: "white", fontWeight: "bold" }}>
                         SubTotal (Rs.)
                       </p>
                     </div>
                   </div>
 
-                  {cartItems.length > 0 ? (
+                  {cartItems.length >= 0 ? (
                     cartItems.map((item) => (
                       <div
                         className="single-cart-area-list main item-parent"
                         key={item.id}
                         style={{
-                          display: "flex", // <-- ensure this is here
+                          display: "flex",
                           alignItems: "center",
-                          minWidth: 500,
+                          minWidth: 500, // ensures horizontal scroll on mobile
                           borderBottom: "1px solid #eee",
                           background: "#fff",
                         }}
                       >
+                        {/* Products column */}
                         <div
                           className="product-main-cart"
                           style={{
@@ -240,6 +208,7 @@ const CartMain = () => {
                             </h6>
                           </div>
                         </div>
+                        {/* Price column */}
                         <div
                           className="price"
                           style={{ flex: 1, textAlign: "center" }}
@@ -248,6 +217,7 @@ const CartMain = () => {
                             {item.price.toFixed(2)}
                           </p>
                         </div>
+                        {/* Quantity column */}
                         <div
                           className="quantity"
                           style={{ flex: 1, textAlign: "center" }}
@@ -302,6 +272,7 @@ const CartMain = () => {
                             </div>
                           </div>
                         </div>
+                        {/* Subtotal column */}
                         <div
                           className="subtotal"
                           style={{ flex: 1, textAlign: "center" }}
@@ -325,6 +296,52 @@ const CartMain = () => {
                       />
                     </div>
                   )}
+
+                  {/* Coupon + Clear */}
+                  <div className="bottom-cupon-code-cart-area">
+                    {/* <form onSubmit={applyCoupon}>
+                      <input
+                        type="text"
+                        placeholder="Coupon Code"
+                        value={coupon}
+                        onChange={e => {
+                          setCoupon(e.target.value);
+                          setCouponMessage('');
+                        }}
+                      />
+                      <button type="submit" className="rts-btn btn-primary">Apply Coupon</button>
+                      {couponMessage && (
+                        <p style={{ color: coupon === '12345' ? 'green' : 'red', marginTop: '8px' }}>{couponMessage}</p>
+                      )}
+                    </form> */}
+                    <div
+                      className="bottom-cupon-code-cart-area"
+                      style={{
+                        width: "100%",
+                        marginTop: "24px",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        gap: "0",
+                      }}
+                    >
+                      <button
+                        onClick={clearCart}
+                        className="rts-btn btn-primary mr--50"
+                        disabled={cartItems.length === 0}
+                        style={{ minWidth: "140px" }}
+                      >
+                        Clear All
+                      </button>
+                      <button
+                        className="rts-btn btn-primary"
+                        onClick={() => (window.location.href = "/")}
+                        style={{ minWidth: "180px" }}
+                      >
+                        Continue to Shopping
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

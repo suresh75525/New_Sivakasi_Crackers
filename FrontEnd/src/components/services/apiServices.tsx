@@ -39,7 +39,7 @@ export const requestOtp = async (mobile: string) => {
     mobile,
   });
   return data;
-}
+};
 
 // verify OTP
 export const verifyOtp = async (mobile: string, otp: string) => {
@@ -48,7 +48,7 @@ export const verifyOtp = async (mobile: string, otp: string) => {
     otp,
   });
   return data;
-}
+};
 
 export const placeOrder = async ({
   name,
@@ -77,6 +77,31 @@ export const placeOrder = async ({
     city,
     pincode,
     landmark,
+  });
+  return data;
+};
+
+export const login = async (username: string, password: string) => {
+  const { data } = await axioApi.post("/auth/login", {
+    username,
+    password,
+  });
+  return data;
+};
+
+// Get Profile API
+export const getProfile = async () => {
+  const token = sessionStorage.getItem("token");
+  const { data } = await axioApi.get("/auth/profile", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return data;
+};
+
+export const getOrderDtls = async () => {
+  const token = sessionStorage.getItem("token");
+  const { data } = await axioApi.get("/orders/getOrderDtls", {
+    headers: { Authorization: `Bearer ${token}` },
   });
   return data;
 };

@@ -94,7 +94,7 @@ function FooterTwo() {
                         className="footer-logo-img"
                       />
                       <a
-                        href="tel:6381497218"
+                        href="tel:9842972802"
                         style={{ color: "#FF9900", fontWeight: "bold" }}
                       >
                         +919842972802

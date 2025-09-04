@@ -43,6 +43,9 @@ const ProductList: React.FC<ProductListProps> = ({
   const [pageByCategory, setPageByCategory] = useState<{
     [key: number]: number;
   }>({});
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
   const [loadingProductId, setLoadingProductId] = useState<number | null>(null);
   const categoryRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
   useEffect(() => {
@@ -54,6 +57,16 @@ const ProductList: React.FC<ProductListProps> = ({
     }
   }, [selectedCategoryId]);
   const { addToCart, cartItems } = useCart();
+
+  const handleImageClick = (product: Product) => {
+    setSelectedProduct(product);
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setSelectedProduct(null);
+  };
 
   const handlePageChange = (categoryId: number, newPage: number) => {
     setPageByCategory((prev) => ({
@@ -100,16 +113,17 @@ const ProductList: React.FC<ProductListProps> = ({
         price: parseFloat(product.price_per_unit),
         quantity: 1,
         active: true,
+        offerPrice: parseFloat(product.original_price), // original price from products table
       });
-      toast.success("Product added to cart!", {
-        position: "top-right",
-        autoClose: 2000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "colored",
-      });
+      // toast.success("Product added to cart!", {
+      //   position: "top-right",
+      //   autoClose: 2000,
+      //   hideProgressBar: true,
+      //   closeOnClick: true,
+      //   pauseOnHover: true,
+      //   draggable: true,
+      //   theme: "colored",
+      // });
     } catch (error) {
       toast.error("Failed to add to cart.", {
         position: "top-right",
@@ -191,6 +205,8 @@ const ProductList: React.FC<ProductListProps> = ({
                           src={product.image_url}
                           alt={product.name}
                           className={styles.productImage}
+                          style={{ cursor: "pointer" }}
+                          onClick={() => handleImageClick(product)}
                         />
 
                         <div className={styles.productDetails}>
@@ -219,25 +235,25 @@ const ProductList: React.FC<ProductListProps> = ({
                             <span
                               style={{
                                 textDecoration: "line-through",
-                                color: "#888",
+                                color: "red",
                                 fontSize: "1.1rem",
                                 fontWeight: "bold", // Bold
-                                textAlign: "center", // Center text
-                                minWidth: "70px",
-                              }}
-                            >
-                              ₹{product.original_price}
-                            </span>
-                            <span
-                              style={{
-                                color: "#e53935",
-                                fontWeight: "bold", // Bold
-                                fontSize: "1.1rem",
                                 textAlign: "center", // Center text
                                 minWidth: "70px",
                               }}
                             >
                               ₹{product.price_per_unit}
+                            </span>
+                            <span
+                              style={{
+                                color: "green",
+                                fontWeight: "bold", // Bold
+                                fontSize: "1.1rem",
+                                textAlign: "center", // Center text
+                                minWidth: "70px",
+                              }}
+                            >
+                              ₹{product.original_price}
                             </span>
                           </div>
                           {product.is_available ? (
@@ -303,6 +319,148 @@ const ProductList: React.FC<ProductListProps> = ({
             </div>
           );
         })
+      )}
+      {modalOpen && selectedProduct && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            zIndex: 9999,
+            width: "100vw",
+            height: "100vh",
+            background: "rgba(0,0,0,0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          onClick={handleCloseModal}
+        >
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: "12px",
+              padding: "24px",
+              minWidth: "320px",
+              maxWidth: "90vw",
+              boxShadow: "0 4px 24px rgba(0,0,0,0.15)",
+              position: "relative",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={selectedProduct.image_url}
+              alt={selectedProduct.name}
+              style={{
+                width: "180px",
+                height: "180px",
+                objectFit: "contain",
+                borderRadius: "8px",
+                marginBottom: "16px",
+              }}
+            />
+            <h3
+              style={{
+                margin: "0 0 8px",
+                fontWeight: "bold",
+                textAlign: "center",
+                color: "#FF9900",
+              }}
+            >
+              {selectedProduct.name}
+            </h3>
+            <div
+              style={{
+                display: "flex",
+                gap: "16px",
+                marginBottom: "12px",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <span
+                style={{
+                  textDecoration: "line-through",
+                  color: "#888",
+                  fontWeight: "bold",
+                  fontSize: "1.2rem",
+                  background: "#ffeaea",
+                  padding: "4px 12px",
+                  borderRadius: "6px",
+                }}
+              >
+                ₹{selectedProduct.price_per_unit}
+              </span>
+              <span
+                style={{
+                  color: "green",
+                  fontWeight: "bold",
+                  fontSize: "1.2rem",
+                  background: "white",
+                  padding: "4px 12px",
+                  borderRadius: "6px",
+                }}
+              >
+                ₹{selectedProduct.original_price}
+              </span>
+            </div>
+            <div style={{ display: "flex", gap: "16px", marginTop: "16px" }}>
+              {getCartCount(selectedProduct.product_id) > 0 ? (
+                <span
+                  style={{
+                    display: "inline-block",
+                    color: "#0070f3",
+                    fontWeight: "bold",
+                    background: "#e6f0fa",
+                    borderRadius: "4px",
+                    padding: "10px 24px",
+                    fontSize: "16px",
+                  }}
+                >
+                  Added
+                </span>
+              ) : (
+                <button
+                  style={{
+                    background: "#22c55e",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "6px",
+                    padding: "10px 24px",
+                    fontWeight: "bold",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    handleAddToCart(selectedProduct);
+                    handleCloseModal();
+                  }}
+                  disabled={loadingProductId === selectedProduct.product_id}
+                >
+                  {loadingProductId === selectedProduct.product_id
+                    ? "Adding..."
+                    : "Add to Cart"}
+                </button>
+              )}
+              <button
+                style={{
+                  background: "#e53935",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "6px",
+                  padding: "10px 24px",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                }}
+                onClick={handleCloseModal}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
