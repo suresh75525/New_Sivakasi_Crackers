@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
 import { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import { useCart } from "@/components/header/CartContext";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface ModalProps {
   show: boolean;
@@ -19,19 +19,20 @@ const ProductDetails: React.FC<ModalProps> = ({
   handleClose,
   productImage,
   productTitle,
-  productPrice
+  productPrice,
 }) => {
   const [quantity, setQuantity] = useState(1);
-  const [activeTab, setActiveTab] = useState<string>('tab1');
+  const [activeTab, setActiveTab] = useState<string>("tab1");
   const { addToCart } = useCart();
 
   const increaseQuantity = () => setQuantity((prev) => prev + 1);
-  const decreaseQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+  const decreaseQuantity = () =>
+    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
   const priceNumber = parseFloat(productPrice) || 0;
   const totalPrice = (priceNumber * quantity).toFixed(2);
 
-  const addcart = () => toast.success('Successfully Added To Cart!');
+  const addcart = () => toast.success("Successfully Added To Cart!");
 
   const handleAdd = () => {
     const item = {
@@ -41,6 +42,7 @@ const ProductDetails: React.FC<ModalProps> = ({
       price: priceNumber,
       quantity: quantity,
       active: true,
+      offerPrice: priceNumber, // Add offerPrice, adjust if you have a different value
     };
 
     addToCart(item);
@@ -49,7 +51,6 @@ const ProductDetails: React.FC<ModalProps> = ({
 
   return (
     <>
-
       <Modal
         show={show}
         onHide={handleClose}
@@ -60,35 +61,40 @@ const ProductDetails: React.FC<ModalProps> = ({
         <div className="product-details-popup-wrapper popup">
           <div className="rts-product-details-section rts-product-details-section2 product-details-popup-section">
             <div className="product-details-popup">
-              <button className="product-details-close-btn" onClick={handleClose}>
+              <button
+                className="product-details-close-btn"
+                onClick={handleClose}
+              >
                 <i className="fal fa-times" />
               </button>
               <div className="details-product-area">
                 <div className="product-thumb-area">
                   <div className="cursor" />
                   <div className="thumb-wrapper one filterd-items figure">
-                    {activeTab === 'tab1' && (
+                    {activeTab === "tab1" && (
                       <div className="product-thumb zoom">
                         <img src={productImage} alt="product-thumb" />
                       </div>
                     )}
-                    {activeTab === 'tab2' && (
+                    {activeTab === "tab2" && (
                       <div className="product-thumb zoom">
                         <img src={productImage} alt="product-thumb" />
                       </div>
                     )}
-                    {activeTab === 'tab3' && (
+                    {activeTab === "tab3" && (
                       <div className="product-thumb zoom">
                         <img src={productImage} alt="product-thumb" />
                       </div>
                     )}
                   </div>
                   <div className="product-thumb-filter-group">
-                    {['tab1', 'tab2', 'tab3'].map((tab) => (
+                    {["tab1", "tab2", "tab3"].map((tab) => (
                       <div
                         key={tab}
                         onClick={() => setActiveTab(tab)}
-                        className={`thumb-filter filter-btn ${activeTab === tab ? 'active' : ''}`}
+                        className={`thumb-filter filter-btn ${
+                          activeTab === tab ? "active" : ""
+                        }`}
                       >
                         <img src={productImage} alt={`thumb-${tab}`} />
                       </div>
@@ -100,9 +106,15 @@ const ProductDetails: React.FC<ModalProps> = ({
                   <div className="product-status d-none">
                     <span className="product-catagory">Dress</span>
                     <div className="rating-stars-group">
-                      <div className="rating-star"><i className="fas fa-star" /></div>
-                      <div className="rating-star"><i className="fas fa-star" /></div>
-                      <div className="rating-star"><i className="fas fa-star-half-alt" /></div>
+                      <div className="rating-star">
+                        <i className="fas fa-star" />
+                      </div>
+                      <div className="rating-star">
+                        <i className="fas fa-star" />
+                      </div>
+                      <div className="rating-star">
+                        <i className="fas fa-star-half-alt" />
+                      </div>
                       <span>10 Reviews</span>
                     </div>
                   </div>
@@ -112,7 +124,7 @@ const ProductDetails: React.FC<ModalProps> = ({
                   </h2>
 
                   <span className="product-price">
-                    <span className="new-price">₹{totalPrice}</span> 
+                    <span className="new-price">₹{totalPrice}</span>
                   </span>
 
                   <div className="product-bottom-action">
@@ -121,8 +133,16 @@ const ProductDetails: React.FC<ModalProps> = ({
                         <button className="button" onClick={decreaseQuantity}>
                           <i className="fal fa-minus minus" />
                         </button>
-                        <input type="text" className="input" value={quantity} readOnly />
-                        <button className="button plus" onClick={increaseQuantity}>
+                        <input
+                          type="text"
+                          className="input"
+                          value={quantity}
+                          readOnly
+                        />
+                        <button
+                          className="button plus"
+                          onClick={increaseQuantity}
+                        >
                           <i className="fal fa-plus plus" />
                         </button>
                       </div>
@@ -145,24 +165,63 @@ const ProductDetails: React.FC<ModalProps> = ({
                       </div>
                     </a>
 
-                    <a href="javascript:void(0);" className="rts-btn btn-primary ml--20">
+                    <a
+                      href="javascript:void(0);"
+                      className="rts-btn btn-primary ml--20"
+                    >
                       <i className="fa-light fa-heart" />
                     </a>
                   </div>
 
                   <div className="product-uniques">
-                    <span className="sku product-unipue"><span>SKU: </span> BO1D0MX8SJ</span>
-                    <span className="catagorys product-unipue"><span>Categories: </span> T-Shirts, Tops, Mens</span>
-                    <span className="tags product-unipue"><span>Tags: </span> fashion, t-shirts, Men</span>
+                    <span className="sku product-unipue">
+                      <span>SKU: </span> BO1D0MX8SJ
+                    </span>
+                    <span className="catagorys product-unipue">
+                      <span>Categories: </span> T-Shirts, Tops, Mens
+                    </span>
+                    <span className="tags product-unipue">
+                      <span>Tags: </span> fashion, t-shirts, Men
+                    </span>
                   </div>
 
                   <div className="share-social">
                     <span>Share:</span>
-                    <a className="platform" href="http://facebook.com" target="_blank"><i className="fab fa-facebook-f" /></a>
-                    <a className="platform" href="http://twitter.com" target="_blank"><i className="fab fa-twitter" /></a>
-                    <a className="platform" href="http://behance.com" target="_blank"><i className="fab fa-behance" /></a>
-                    <a className="platform" href="http://youtube.com" target="_blank"><i className="fab fa-youtube" /></a>
-                    <a className="platform" href="http://linkedin.com" target="_blank"><i className="fab fa-linkedin" /></a>
+                    <a
+                      className="platform"
+                      href="http://facebook.com"
+                      target="_blank"
+                    >
+                      <i className="fab fa-facebook-f" />
+                    </a>
+                    <a
+                      className="platform"
+                      href="http://twitter.com"
+                      target="_blank"
+                    >
+                      <i className="fab fa-twitter" />
+                    </a>
+                    <a
+                      className="platform"
+                      href="http://behance.com"
+                      target="_blank"
+                    >
+                      <i className="fab fa-behance" />
+                    </a>
+                    <a
+                      className="platform"
+                      href="http://youtube.com"
+                      target="_blank"
+                    >
+                      <i className="fab fa-youtube" />
+                    </a>
+                    <a
+                      className="platform"
+                      href="http://linkedin.com"
+                      target="_blank"
+                    >
+                      <i className="fab fa-linkedin" />
+                    </a>
                   </div>
                 </div>
               </div>

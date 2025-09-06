@@ -73,6 +73,7 @@ const BlogGridMain: React.FC<BlogGridMainProps> = ({
       price: parseFloat(Price ?? "0"),
       quantity: 1,
       active: true,
+      offerPrice: parseFloat(Price ?? "0"),
     });
   };
 

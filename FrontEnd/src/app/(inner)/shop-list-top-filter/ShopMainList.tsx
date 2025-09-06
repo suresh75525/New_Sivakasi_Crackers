@@ -1,11 +1,9 @@
-"use client"
-import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
+"use client";
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import { useCart } from "@/components/header/CartContext";
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
-
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface BlogGridMainProps {
   Slug: string;
@@ -20,57 +18,51 @@ const BlogGridMain: React.FC<BlogGridMainProps> = ({
   ProductTitle,
   Price,
 }) => {
-
-
-  type ModalType = 'one' | 'two' | 'three' | null;
+  type ModalType = "one" | "two" | "three" | null;
   const [activeModal, setActiveModal] = useState<ModalType>(null);
-
-
 
   // number count up and down
   useEffect(() => {
     const handleQuantityClick = (e: Event) => {
       const button = e.currentTarget as HTMLElement;
-      const parent = button.closest('.quantity-edit') as HTMLElement | null;
+      const parent = button.closest(".quantity-edit") as HTMLElement | null;
       if (!parent) return;
 
-      const input = parent.querySelector('.input') as HTMLInputElement | null;
-      const addToCart = parent.querySelector('a.add-to-cart') as HTMLElement | null;
+      const input = parent.querySelector(".input") as HTMLInputElement | null;
+      const addToCart = parent.querySelector(
+        "a.add-to-cart"
+      ) as HTMLElement | null;
       if (!input) return;
 
-      let oldValue = parseInt(input.value || '1', 10);
+      let oldValue = parseInt(input.value || "1", 10);
       let newVal = oldValue;
 
-      if (button.classList.contains('plus')) {
+      if (button.classList.contains("plus")) {
         newVal = oldValue + 1;
-      } else if (button.classList.contains('minus')) {
+      } else if (button.classList.contains("minus")) {
         newVal = oldValue > 1 ? oldValue - 1 : 1;
       }
 
       input.value = newVal.toString();
       if (addToCart) {
-        addToCart.setAttribute('data-quantity', newVal.toString());
+        addToCart.setAttribute("data-quantity", newVal.toString());
       }
     };
 
-    const buttons = document.querySelectorAll('.quantity-edit .button');
+    const buttons = document.querySelectorAll(".quantity-edit .button");
 
     // 💡 Remove any existing handlers first (safe rebind)
-    buttons.forEach(button => {
-      button.removeEventListener('click', handleQuantityClick);
-      button.addEventListener('click', handleQuantityClick);
+    buttons.forEach((button) => {
+      button.removeEventListener("click", handleQuantityClick);
+      button.addEventListener("click", handleQuantityClick);
     });
 
     return () => {
-      buttons.forEach(button => {
-        button.removeEventListener('click', handleQuantityClick);
+      buttons.forEach((button) => {
+        button.removeEventListener("click", handleQuantityClick);
       });
     };
   }, []);
-
-
-
-
 
   // cart item
   const { addToCart } = useCart(); // Now works
@@ -79,18 +71,18 @@ const BlogGridMain: React.FC<BlogGridMainProps> = ({
     addToCart({
       id: Date.now(), // unique ID
       image: `/assets/images/grocery/${ProductImage}`,
-      title: ProductTitle ?? 'Default Product Title',
-      price: parseFloat(Price ?? '0'),
+      title: ProductTitle ?? "Default Product Title",
+      price: parseFloat(Price ?? "0"),
       quantity: 1,
       active: true,
+      offerPrice: parseFloat(Price ?? "0"),
     });
   };
 
-const addcart = () => toast('Successfully Add To Cart !');
+  const addcart = () => toast("Successfully Add To Cart !");
 
   return (
     <>
-
       <div className="single-shopping-card-one discount-offer">
         <a href={`/shop/${Slug}`} className="thumbnail-preview">
           <div className="badge">
@@ -106,7 +98,7 @@ const addcart = () => toast('Successfully Add To Cart !');
           <div className="title-area-left">
             <a href={`/shop/${Slug}`}>
               <h4 className="title">
-                {ProductTitle ? ProductTitle : 'How to growing your business'}
+                {ProductTitle ? ProductTitle : "How to growing your business"}
               </h4>
             </a>
             <span className="availability">500g Pack</span>
@@ -126,11 +118,15 @@ const addcart = () => toast('Successfully Add To Cart !');
                   </button>
                 </div>
               </div>
-              <a href="#" className="rts-btn btn-primary radious-sm with-icon" onClick={e => {
-                e.preventDefault();
-                handleAdd();
-                addcart();
-              }}>
+              <a
+                href="#"
+                className="rts-btn btn-primary radious-sm with-icon"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleAdd();
+                  addcart();
+                }}
+              >
                 <div className="btn-text">Add To Cart</div>
                 <div className="arrow-icon">
                   <i className="fa-regular fa-cart-shopping" />
@@ -166,8 +162,6 @@ const addcart = () => toast('Successfully Add To Cart !');
           </div>
         </div>
       </div>
-
-
     </>
   );
 };

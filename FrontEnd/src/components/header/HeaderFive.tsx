@@ -283,7 +283,7 @@ function HeaderFive({
                       </form>
                     )}
                     {/* Account */}
-                    <a
+                    {/* <a
                       href="/login"
                       className={styles.account}
                       style={{
@@ -309,7 +309,7 @@ function HeaderFive({
                       {!isMobile && (
                         <span style={{ marginLeft: 6 }}>Account</span>
                       )}
-                    </a>
+                    </a> */}
                     {/* Cart */}
                     <div style={{ flex: "0 0 auto" }}>
                       <Cart showLabel={!isMobile} />

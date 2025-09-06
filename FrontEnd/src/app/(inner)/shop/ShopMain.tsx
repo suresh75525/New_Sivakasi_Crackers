@@ -80,6 +80,7 @@ const BlogGridMain: React.FC<BlogGridMainProps> = ({
       price: parseFloat(Price ?? "0"),
       quantity: 1,
       active: true,
+      offerPrice: parseFloat(Price ?? "0"),
     });
 
     setAdded(true);
@@ -118,7 +119,7 @@ const BlogGridMain: React.FC<BlogGridMainProps> = ({
   return (
     <>
       <div className="image-and-action-area-wrapper">
-        <a href='#' className="thumbnail-preview">
+        <a href="#" className="thumbnail-preview">
           <div className="badge">
             <span>
               New <br />
@@ -152,9 +153,12 @@ const BlogGridMain: React.FC<BlogGridMainProps> = ({
         }}
       >
         {/* <a href='#' style={{ textDecoration: "none" }}> */}
-          <p className="title" style={{ color: "black",fontSize:'15px',fontWeight:'bold' }}>
-            {ProductTitle ?? "None"}
-          </p>
+        <p
+          className="title"
+          style={{ color: "black", fontSize: "15px", fontWeight: "bold" }}
+        >
+          {ProductTitle ?? "None"}
+        </p>
         {/* </a> */}
 
         <div

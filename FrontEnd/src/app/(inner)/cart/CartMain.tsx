@@ -1,8 +1,22 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+
+import Alert from "@mui/material/Alert";
+import Typography from "@mui/material/Typography";
+
 import { useCart } from "@/components/header/CartContext";
 import styles from "./CartMain.module.css";
 import Link from "next/link";
+import Button from "@mui/material/Button";
 
 const CartMain = () => {
   const { cartItems, removeFromCart, updateItemQuantity } = useCart();
@@ -10,7 +24,7 @@ const CartMain = () => {
   const [discount, setDiscount] = useState(0);
   const [subtotal, setSubtotal] = useState(0);
   const [loadingCheckout, setLoadingCheckout] = useState(false);
-
+  const MIN_ORDER_AMOUNT = 2000;
   useEffect(() => {
     const total = cartItems.reduce((acc, item) => {
       const price = item.price;
@@ -116,248 +130,343 @@ const CartMain = () => {
     }
   `}
       </style>
-      <div className="rts-cart-area rts-section-gap bg_light-1">
+      <div
+        className="rts-cart-area rts-section-gap bg_light-1"
+        style={{ paddingBottom: "80px" }}
+      >
         <div className="container">
           {/* Breadcrumb */}
           <div className="row g-5">
             {/* Cart Table - always first */}
             <div className="col-xl-9 col-12 order-2 order-xl-1">
-              <div style={{ overflowX: "auto", width: "100%" }}>
-                <div className={styles.rtsCartListArea}>
-                  <div
-                    className="single-cart-area-list head"
-                    style={{
-                      background: "#FF9900",
-                      borderRadius: "8px",
-                      padding: "8px 0",
-                      position: "sticky",
-                      top: 0,
-                      zIndex: 2,
-                    }}
-                  >
-                    <div className="product-main">
-                      <p style={{ color: "white", fontWeight: "bold" }}>
+              <TableContainer
+                component={Paper}
+                sx={{
+                  width: "100%",
+                  overflowX: "auto",
+                  maxHeight: 420, // Adjust height for 4 rows (about 80px per row)
+                  overflowY: "auto",
+                }}
+              >
+                <Table sx={{ minWidth: 500 }} aria-label="cart table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell
+                        sx={{
+                          position: "sticky",
+                          top: 0,
+                          zIndex: 2,
+                          fontWeight: 700,
+                          color: "#fff",
+                          background: "#FF9900",
+                          fontSize: 15,
+                        }}
+                      >
                         Products
-                      </p>
-                    </div>
-                    <div className="price">
-                      <p style={{ color: "white", fontWeight: "bold" }}>
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          position: "sticky",
+                          top: 0,
+                          zIndex: 2,
+                          fontWeight: 700,
+                          color: "#fff",
+                          background: "#FF9900",
+                          fontSize: 12,
+                        }}
+                        align="center"
+                      >
                         Price (Rs.)
-                      </p>
-                    </div>
-                    <div className="quantity">
-                      <p style={{ color: "white", fontWeight: "bold" }}>
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          position: "sticky",
+                          top: 0,
+                          zIndex: 2,
+                          fontWeight: 700,
+                          color: "#fff",
+                          background: "#FF9900",
+                          fontSize: 12,
+                        }}
+                        align="center"
+                      >
                         Quantity
-                      </p>
-                    </div>
-                    <div className="subtotal">
-                      <p style={{ color: "white", fontWeight: "bold" }}>
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          position: "sticky",
+                          top: 0,
+                          zIndex: 2,
+                          fontWeight: 700,
+                          color: "#fff",
+                          background: "#FF9900",
+                          fontSize: 12,
+                        }}
+                        align="center"
+                      >
                         SubTotal (Rs.)
-                      </p>
-                    </div>
-                  </div>
-
-                  {cartItems.length >= 0 ? (
-                    cartItems.map((item) => (
-                      <div
-                        className="single-cart-area-list main item-parent"
-                        key={item.id}
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          minWidth: 500, // ensures horizontal scroll on mobile
-                          borderBottom: "1px solid #eee",
-                          background: "#fff",
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          position: "sticky",
+                          top: 0,
+                          zIndex: 2,
+                          fontWeight: 700,
+                          color: "#fff",
+                          background: "#FF9900",
+                          fontSize: 12,
                         }}
-                      >
-                        {/* Products column */}
-                        <div
-                          className="product-main-cart"
-                          style={{
-                            flex: 2,
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 8,
-                          }}
-                        >
-                          <div
-                            className="close section-activation"
-                            onClick={() => removeFromCart(item.id)}
-                            style={{ marginRight: 8, cursor: "pointer" }}
-                          >
-                            <i className="fa-regular fa-x" />
-                          </div>
-                          <div className="thumbnail" style={{ marginRight: 8 }}>
-                            <img
-                              src={item.image}
-                              alt="shop"
-                              style={{
-                                width: 50,
-                                height: 50,
-                                objectFit: "cover",
-                                borderRadius: 4,
-                              }}
-                            />
-                          </div>
-                          <div className="information">
-                            <h6
-                              className="title"
-                              style={{ color: "black", margin: 0 }}
-                            >
-                              {item.title}
-                            </h6>
-                          </div>
-                        </div>
-                        {/* Price column */}
-                        <div
-                          className="price"
-                          style={{ flex: 1, textAlign: "center" }}
-                        >
-                          <p style={{ color: "black", margin: 0 }}>
-                            {item.price.toFixed(2)}
-                          </p>
-                        </div>
-                        {/* Quantity column */}
-                        <div
-                          className="quantity"
-                          style={{ flex: 1, textAlign: "center" }}
-                        >
-                          <div
-                            className="quantity-edit"
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              gap: 4,
-                            }}
-                          >
-                            <input
-                              type="text"
-                              className="input"
-                              value={item.quantity}
-                              readOnly
-                              style={{
-                                width: 40,
-                                textAlign: "center",
-                                marginRight: 4,
-                              }}
-                            />
-                            <div
-                              className="button-wrapper-action"
-                              style={{
+                        align="center"
+                      ></TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {cartItems.length > 0 ? (
+                      cartItems.map((item) => (
+                        <TableRow key={item.id}>
+                          {/* Products column */}
+                          <TableCell>
+                            <Box
+                              sx={{
                                 display: "flex",
-                                flexDirection: "column",
-                                gap: 2,
+                                alignItems: "center",
+                                gap: 1,
                               }}
                             >
-                              <button
-                                className="button minus"
-                                onClick={() =>
-                                  item.quantity > 1 &&
-                                  updateItemQuantity(item.id, item.quantity - 1)
-                                }
-                                style={{ padding: "2px 6px" }}
+                              <img
+                                src={item.image}
+                                alt="shop"
+                                style={{
+                                  width: 50,
+                                  height: 50,
+                                  objectFit: "cover",
+                                  borderRadius: 4,
+                                  marginRight: 8,
+                                }}
+                              />
+                              <span
+                                style={{
+                                  color: "#222",
+                                  fontWeight: 1000,
+                                  fontSize: 15,
+                                }}
                               >
-                                <i className="fa-regular fa-chevron-down" />
-                              </button>
-                              <button
-                                className="button plus"
-                                onClick={() =>
-                                  updateItemQuantity(item.id, item.quantity + 1)
-                                }
-                                style={{ padding: "2px 6px" }}
+                                {item.title}
+                              </span>
+                            </Box>
+                          </TableCell>
+                          {/* Price column */}
+                          <TableCell
+                            align="center"
+                            sx={{ color: "#222", fontSize: 15 }}
+                          >
+                            {item.price.toFixed(2)}
+                          </TableCell>
+                          {/* Quantity column */}
+                          <TableCell align="center">
+                            <Box
+                              sx={{
+                                display: "inline-flex",
+                                alignItems: "center",
+                                border: "1px solid #e0e0e0",
+                                borderRadius: "6px",
+                                overflow: "hidden",
+                                background: "#fff",
+                              }}
+                            >
+                              <input
+                                type="text"
+                                value={item.quantity}
+                                readOnly
+                                style={{
+                                  width: 56,
+                                  height: 36,
+                                  textAlign: "center",
+                                  border: "none",
+                                  outline: "none",
+                                  fontWeight: 600,
+                                  fontSize: 16,
+                                  background: "transparent",
+                                }}
+                              />
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  borderLeft: "1px solid #e0e0e0",
+                                  height: 36,
+                                  weight: 20,
+                                }}
                               >
-                                <i className="fa-regular fa-chevron-up" />
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                        {/* Subtotal column */}
-                        <div
-                          className="subtotal"
-                          style={{ flex: 1, textAlign: "center" }}
-                        >
-                          <p style={{ color: "black", margin: 0 }}>
+                                <IconButton
+                                  size="large"
+                                  sx={{
+                                    p: "2px",
+                                    borderRadius: 0,
+                                    "&:hover": {
+                                      backgroundColor: "#22c55e",
+                                      color: "#fff",
+                                    },
+                                  }}
+                                  onClick={() =>
+                                    updateItemQuantity(
+                                      item.id,
+                                      item.quantity + 1
+                                    )
+                                  }
+                                >
+                                  <i className="fa-regular fa-chevron-up" />
+                                </IconButton>
+                                <IconButton
+                                  size="large"
+                                  sx={{
+                                    p: "2px",
+                                    borderRadius: 0,
+                                    "&:hover": {
+                                      backgroundColor: "red",
+                                      color: "#fff",
+                                    },
+                                  }}
+                                  onClick={() =>
+                                    item.quantity > 1 &&
+                                    updateItemQuantity(
+                                      item.id,
+                                      item.quantity - 1
+                                    )
+                                  }
+                                >
+                                  <i className="fa-regular fa-chevron-down" />
+                                </IconButton>
+                              </Box>
+                            </Box>
+                          </TableCell>
+                          {/* Subtotal column */}
+                          <TableCell
+                            align="center"
+                            sx={{ color: "#222", fontSize: 15 }}
+                          >
                             {(item.price * item.quantity).toFixed(2)}
-                          </p>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div style={{ textAlign: "center", padding: "40px 0" }}>
-                      <img
-                        src="/emptyCart.png"
-                        alt="Empty Cart"
-                        style={{
-                          width: "350px",
-                          maxWidth: "100%",
-                          margin: "0 auto",
-                        }}
-                      />
-                    </div>
-                  )}
-
-                  {/* Coupon + Clear */}
-                  <div className="bottom-cupon-code-cart-area">
-                    {/* <form onSubmit={applyCoupon}>
-                      <input
-                        type="text"
-                        placeholder="Coupon Code"
-                        value={coupon}
-                        onChange={e => {
-                          setCoupon(e.target.value);
-                          setCouponMessage('');
-                        }}
-                      />
-                      <button type="submit" className="rts-btn btn-primary">Apply Coupon</button>
-                      {couponMessage && (
-                        <p style={{ color: coupon === '12345' ? 'green' : 'red', marginTop: '8px' }}>{couponMessage}</p>
-                      )}
-                    </form> */}
-                    <div
-                      className="bottom-cupon-code-cart-area"
-                      style={{
-                        width: "100%",
-                        marginTop: "24px",
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        gap: "0",
-                      }}
-                    >
-                      <button
-                        onClick={clearCart}
-                        className="rts-btn btn-primary mr--50"
-                        disabled={cartItems.length === 0}
-                        style={{ minWidth: "140px" }}
-                      >
-                        Clear All
-                      </button>
-                      <button
-                        className="rts-btn btn-primary"
-                        onClick={() => (window.location.href = "/")}
-                        style={{ minWidth: "180px" }}
-                      >
-                        Continue to Shopping
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                          </TableCell>
+                          {/* Remove button column (for mobile accessibility) */}
+                          <TableCell align="center">
+                            <IconButton
+                              onClick={() => removeFromCart(item.id)}
+                              size="medium"
+                              color="error"
+                            >
+                              <i className="fa-regular fa-trash" />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan={5} align="center">
+                          <img
+                            src="/emptyCart.png"
+                            alt="Empty Cart"
+                            style={{
+                              width: "220px",
+                              maxWidth: "100%",
+                              margin: "0 auto",
+                              display: "block",
+                            }}
+                          />
+                          <div style={{ color: "#888", marginTop: 12 }}>
+                            Your cart is empty.
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <Box
+                sx={{
+                  display: "flex",
+                  width: "100%",
+                  mt: 3,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: 0,
+                }}
+              >
+                <Button
+                  onClick={clearCart}
+                  variant="contained"
+                  color="error"
+                  disabled={cartItems.length === 0}
+                  sx={{
+                    width: 140, // ensures enough width for background
+                    px: 2,
+                    py: 1,
+                    fontSize: { xs: 13, sm: 15 },
+                    borderRadius: 2,
+                    textTransform: "none",
+                  }}
+                >
+                  Clear All
+                </Button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => (window.location.href = "/")}
+                  sx={{
+                    width: 170,
+                    px: 2,
+                    py: 1,
+                    fontSize: { xs: 13, sm: 15 },
+                    borderRadius: 2,
+                    textTransform: "none",
+                  }}
+                >
+                  Continue to Shopping
+                </Button>
+              </Box>
             </div>
+
             {/* Cart Totals - always second */}
-            <div className="col-xl-3 col-12 order-1 order-xl-2">
-              <div className="cart-total-area-start-right">
+            <div
+              className="col-xl-3 col-12 order-1 order-xl-2"
+              style={{
+                position: "relative",
+                zIndex: 1,
+              }}
+            >
+              {totalAfterDiscount > 0 &&
+                totalAfterDiscount < MIN_ORDER_AMOUNT && (
+                  <Alert severity="info" sx={{ mb: 2 }}>
+                    <Typography variant="body2" fontWeight={600} fontSize={14}>
+                      Your Minimum order amount Should Rs. {MIN_ORDER_AMOUNT}
+                    </Typography>
+                  </Alert>
+                )}
+              <div
+                className="cart-total-area-start-right"
+                style={{
+                  position: "sticky",
+                  top: 24, // keeps it visible when scrolling
+                  background: "#fff",
+                  borderRadius: 8,
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                  padding: "16px",
+                  marginTop: 0,
+                  minWidth: 260,
+                  maxWidth: 350,
+                }}
+              >
                 <h5
                   className="title"
                   style={{
                     color: "green",
                     fontWeight: "bold",
-                    fontSize: "20px",
+                    fontSize: "30px",
                   }}
                 >
                   Cart Totals
                 </h5>
+
                 <div
                   style={{
                     display: "flex",
@@ -412,8 +521,18 @@ const CartMain = () => {
                     <button
                       className="rts-btn btn-primary"
                       style={{ minWidth: "200px" }}
-                      disabled={subtotal <= 0 || loadingCheckout}
+                      disabled={
+                        subtotal < MIN_ORDER_AMOUNT ||
+                        subtotal <= 0 ||
+                        loadingCheckout
+                      }
                       onClick={() => {
+                        if (subtotal < MIN_ORDER_AMOUNT) {
+                          alert(
+                            `Minimum order amount is Rs. ${MIN_ORDER_AMOUNT}. Please add more products to proceed.`
+                          );
+                          return;
+                        }
                         setLoadingCheckout(true);
                         setTimeout(() => {
                           window.location.href = "/checkout";
