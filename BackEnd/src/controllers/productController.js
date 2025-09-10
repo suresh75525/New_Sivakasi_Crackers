@@ -236,7 +236,7 @@ exports.getHomepageProducts = async (req, res) => {
       type: sequelize.QueryTypes.SELECT,
     });
 
-    // Group by category and add total_products
+    // Group by category and add total_products, include all products
     const grouped = {};
     products.forEach((prod) => {
       if (!grouped[prod.category_id]) {
@@ -251,6 +251,7 @@ exports.getHomepageProducts = async (req, res) => {
       grouped[prod.category_id].total_products += 1;
     });
 
+    // Do NOT limit products array
     res.json(Object.values(grouped));
   } catch (error) {
     console.error("❌ Error in getHomepageProducts:", error);

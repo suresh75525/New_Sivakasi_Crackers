@@ -10,6 +10,7 @@ import styles from "./header.module.css";
 import { useCompare } from "@/components/header/CompareContext";
 import { useRouter } from "next/navigation";
 import { getCategories, getProducts } from "../services/apiServices";
+// import PhoneLogo from "../common/PhoneLogo";
 
 // Simple hook to detect mobile screen size
 function useIsMobile() {
@@ -136,7 +137,17 @@ function HeaderFive({
   // --- Search suggestion logic end ---
 
   return (
-    <div>
+    <div
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100%",
+        zIndex: 1000,
+        background: "#fff",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+      }}
+    >
       <>
         {/* rts header area start */}
         <div
@@ -155,6 +166,9 @@ function HeaderFive({
                           Sivakasi Crackers
                         </strong>
                         ! 🎆 Celebrate safe, Celebrate bright &nbsp;&nbsp;&nbsp;
+                        <span style={{ color: "black", fontWeight: 700 }}>
+                          Minimum order is at least Rs. 2,000.
+                        </span>
                       </span>
                     </div>
                   </div>
@@ -283,7 +297,7 @@ function HeaderFive({
                       </form>
                     )}
                     {/* Account */}
-                    {/* <a
+                    <a
                       href="/login"
                       className={styles.account}
                       style={{
@@ -309,7 +323,7 @@ function HeaderFive({
                       {!isMobile && (
                         <span style={{ marginLeft: 6 }}>Account</span>
                       )}
-                    </a> */}
+                    </a>
                     {/* Cart */}
                     <div style={{ flex: "0 0 auto" }}>
                       <Cart showLabel={!isMobile} />
@@ -323,6 +337,7 @@ function HeaderFive({
         {/* rts header area end */}
       </>
       <BackToTop />
+      {/* <PhoneLogo /> */}
       {/* <Sidebar /> */}
     </div>
   );

@@ -17,6 +17,7 @@ import { useCart } from "@/components/header/CartContext";
 import styles from "./CartMain.module.css";
 import Link from "next/link";
 import Button from "@mui/material/Button";
+import { removeProductFromCart } from "@/components/services/apiServices";
 
 const CartMain = () => {
   const { cartItems, removeFromCart, updateItemQuantity } = useCart();
@@ -34,13 +35,15 @@ const CartMain = () => {
     setSubtotal(total);
   }, [cartItems]);
 
-  const clearCart = () => {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("cartItems");
-      localStorage.removeItem("coupon");
-      localStorage.removeItem("discount");
-    }
+  const clearCart = async () => {
     setDiscount(0);
+    try {
+      const msg = await removeProductFromCart("all");
+      // Optionally, show a toast or log the message
+      console.log(msg);
+    } catch (err) {
+      console.error(err);
+    }
     cartItems.forEach((item) => removeFromCart(item.id));
   };
 
@@ -132,7 +135,7 @@ const CartMain = () => {
       </style>
       <div
         className="rts-cart-area rts-section-gap bg_light-1"
-        style={{ paddingBottom: "80px" }}
+        style={{ paddingTop: "60px" }}
       >
         <div className="container">
           {/* Breadcrumb */}
@@ -311,7 +314,8 @@ const CartMain = () => {
                                   onClick={() =>
                                     updateItemQuantity(
                                       item.id,
-                                      item.quantity + 1
+                                      item.quantity + 1,
+                                      "add"
                                     )
                                   }
                                 >
@@ -331,7 +335,8 @@ const CartMain = () => {
                                     item.quantity > 1 &&
                                     updateItemQuantity(
                                       item.id,
-                                      item.quantity - 1
+                                      item.quantity - 1,
+                                      "subtract"
                                     )
                                   }
                                 >
@@ -438,7 +443,7 @@ const CartMain = () => {
                 totalAfterDiscount < MIN_ORDER_AMOUNT && (
                   <Alert severity="info" sx={{ mb: 2 }}>
                     <Typography variant="body2" fontWeight={600} fontSize={14}>
-                      Your Minimum order amount Should Rs. {MIN_ORDER_AMOUNT}
+                      Minimum Order is at least Rs. {MIN_ORDER_AMOUNT}
                     </Typography>
                   </Alert>
                 )}

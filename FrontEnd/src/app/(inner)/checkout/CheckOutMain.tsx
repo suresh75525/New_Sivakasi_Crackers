@@ -6,13 +6,13 @@ import TextField from "@mui/material/TextField";
 import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { placeOrder } from "@/components/services/apiServices";
+import { removeProductFromCart } from "@/components/services/apiServices";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function CheckOutMain() {
-  const { cartItems } = useCart();
   const [isPincodeValid, setIsPincodeValid] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
-
+  const { cartItems, clearCart } = useCart();
   const session_id =
     typeof window !== "undefined"
       ? localStorage.getItem("session_id") || ""
@@ -69,7 +69,10 @@ export default function CheckOutMain() {
         toast.success(result.message);
         sessionStorage.removeItem("session_id");
         localStorage.removeItem("cartItems");
+        await removeProductFromCart("all");
+        clearCart();
         router.push("/"); // Redirect to home page
+        // hrer cartItems
       } else {
         toast.error("Order failed. Please try again.", {
           position: "top-right",
@@ -132,11 +135,13 @@ export default function CheckOutMain() {
   return (
     <div
       style={{
-        minHeight: "80vh",
+        minHeight: "50px",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         background: "#f0f6ff",
+        paddingBottom: "50px",
+        paddingTop: "100px",
       }}
     >
       <div

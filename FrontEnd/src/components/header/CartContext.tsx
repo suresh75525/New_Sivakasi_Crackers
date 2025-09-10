@@ -6,6 +6,10 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
+import {
+  updateCartQuantity as updateCartQuantityApi,
+  removeProductFromCart,
+} from "@/components/services/apiServices";
 
 type CartItem = {
   id: number;
@@ -21,7 +25,12 @@ type CartContextType = {
   cartItems: CartItem[];
   addToCart: (item: CartItem) => void;
   removeFromCart: (id: number) => void;
-  updateItemQuantity: (id: number, quantity: number) => void; // <-- Add this line
+  updateItemQuantity: (
+    id: number,
+    quantity: number,
+    method: "add" | "subtract"
+  ) => Promise<void>;
+  clearCart: () => void;
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -54,20 +63,50 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const removeFromCart = (id: number) => {
+  const removeFromCart = async (id: number) => {
     setCartItems((prev) => prev.filter((item) => item.id !== id));
+    try {
+      const msg = await removeProductFromCart(id);
+      // Optionally, show a toast or log the message
+      console.log(msg);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   // Add this function
-  const updateItemQuantity = (id: number, quantity: number) => {
+  const updateItemQuantity = async (
+    id: number,
+    quantity: number,
+    method: "add" | "subtract"
+  ) => {
     setCartItems((prev) =>
       prev.map((item) => (item.id === id ? { ...item, quantity } : item))
     );
+    // Call backend API to update cart quantity
+    try {
+      const msg = await updateCartQuantityApi(id, Math.abs(quantity), method);
+      // Optionally, you can show a toast or log the message
+      console.log(msg);
+    } catch (err) {
+      // Handle error if needed
+      console.error(err);
+    }
+  };
+
+  const clearCart = () => {
+    setCartItems([]);
   };
 
   return (
     <CartContext.Provider
-      value={{ cartItems, addToCart, removeFromCart, updateItemQuantity }}
+      value={{
+        cartItems,
+        addToCart,
+        removeFromCart,
+        updateItemQuantity,
+        clearCart,
+      }}
     >
       {children}
     </CartContext.Provider>

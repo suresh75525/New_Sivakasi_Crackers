@@ -92,6 +92,13 @@ exports.removeProductFromCart = async (req, res) => {
         .json({ message: "session_id and product_id are required" });
     }
 
+    if (product_id === "all") {
+      // Remove all products from the cart for this session
+      await GuestCart.destroy({ where: { session_id } });
+      return res.json({ message: "All products removed from cart" });
+    }
+
+    // Remove a single product from the cart
     const cartItem = await GuestCart.findOne({
       where: { session_id, product_id },
     });
@@ -143,9 +150,9 @@ exports.updateCartQuantity = async (req, res) => {
     // 3️⃣ Adjust quantity
     let newQuantity = cartItem.quantity;
     if (method === "add") {
-      newQuantity += quantity;
+      newQuantity += 1;
     } else if (method === "subtract") {
-      newQuantity -= quantity;
+      newQuantity -= 1;
     }
 
     if (newQuantity <= 0) {

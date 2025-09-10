@@ -76,11 +76,17 @@ exports.placeOrder = async (req, res) => {
 
     for (const item of cartItems) {
       const price = parseFloat(item.Product.price_per_unit);
-      const gstPct = parseFloat(item.Product.gst_percentage) || 0;
+      // const gstPct = parseFloat(item.Product.gst_percentage) || 0;
       const qty = item.quantity;
-      const discount = price * qty * 0.73;
-
-      const gstAmt = (price * qty * gstPct) / 100;
+      const discountPct = parseFloat(item.Product.original_price) || 0;
+      const discountAmount = discountPct * qty;
+      console.log(
+        "Discount Amount:",
+        discountAmount,
+        qty,
+        item.Product.original_price
+      );
+      // const gstAmt = (price * qty * gstPct) / 100;
 
       await OrderItem.create(
         {
@@ -89,9 +95,9 @@ exports.placeOrder = async (req, res) => {
           product_name: item.Product.name,
           quantity: qty,
           price_per_unit: price,
-          discount_amount: price - discount,
-          gst_percentage: gstPct,
-          gst_amount: gstAmt,
+          discount_amount: discountAmount,
+          gst_percentage: 0,
+          gst_amount: 0,
         },
         { transaction: t }
       );
@@ -130,27 +136,27 @@ exports.placeOrder = async (req, res) => {
         pdf_url: `/ invoices / ${path.basename(pdfPath)}`,
       }); // no tx
 
-      await sendWhatsAppMessage(
-        process.env.TWILIO_WHATSAPP_TO,
-        [
-          "Congratulations! You have a new order.",
-          "----------------------------------",
-          "Customer Details",
-          `Name: ${name}    Mob No: ${mobile_number}`,
-          `Address: ${address_line1}    City: ${city}`,
-          `Pincode: ${pincode}    Landmark: ${landmark}`,
-          "----------------------------------",
-          "S.No   Product Name   Quantity   Price",
-          cartItems
-            .map(
-              (item, idx) =>
-                `${idx + 1}. ${item.Product.name}   ${item.quantity}   ₹${
-                  item.Product.price_per_unit
-                }`
-            )
-            .join("\n"),
-        ].join("\n")
-      );
+      // await sendWhatsAppMessage(
+      //   process.env.TWILIO_WHATSAPP_TO,
+      //   [
+      //     "Congratulations! You have a new order.",
+      //     "----------------------------------",
+      //     "Customer Details",
+      //     `Name: ${name}    Mob No: ${mobile_number}`,
+      //     `Address: ${address_line1}    City: ${city}`,
+      //     `Pincode: ${pincode}    Landmark: ${landmark}`,
+      //     "----------------------------------",
+      //     "S.No   Product Name   Quantity   Price",
+      //     cartItems
+      //       .map(
+      //         (item, idx) =>
+      //           `${idx + 1}. ${item.Product.name}   ${item.quantity}   ₹${
+      //             item.Product.price_per_unit
+      //           }`
+      //       )
+      //       .join("\n"),
+      //   ].join("\n")
+      // );
     } catch (sideEffectErr) {
       console.error(
         "⚠️ Post-commit step failed (invoice/WhatsApp):",
@@ -174,6 +180,8 @@ exports.placeOrder = async (req, res) => {
 
 exports.getOrderDtls = async (req, res) => {
   try {
+    const serverUrl = process.env.SERVER_URL; // Change if deployed
+
     const orders = await Order.findAll({
       attributes: ["order_id"],
       include: [
@@ -189,6 +197,8 @@ exports.getOrderDtls = async (req, res) => {
         {
           model: Address,
           attributes: [
+            "name",
+            "mobile_number",
             "address_line1",
             "address_line2",
             "city",
@@ -203,7 +213,18 @@ exports.getOrderDtls = async (req, res) => {
       ],
     });
 
-    res.json({ orders });
+    // Add full URL for invoice PDF
+    const ordersWithFullPdfUrl = orders.map((order) => {
+      const orderObj = order.toJSON();
+      if (orderObj.Invoice && orderObj.Invoice.pdf_url) {
+        // Remove spaces and prefix with server URL
+        const cleanUrl = orderObj.Invoice.pdf_url.replace(/\s/g, "");
+        orderObj.Invoice.pdf_url = `${serverUrl}${cleanUrl}`;
+      }
+      return orderObj;
+    });
+
+    res.json({ orders: ordersWithFullPdfUrl });
   } catch (error) {
     console.error("❌ Error in getOrderDtls:", error);
     res.status(500).json({ message: "Server error" });

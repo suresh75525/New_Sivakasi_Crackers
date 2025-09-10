@@ -1,84 +1,151 @@
-'use client';
+"use client";
 
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
+
+// Add keyframes for vibration animation
+const vibrationStyle = `
+@keyframes vibrate {
+  0% { transform: translateY(0); }
+  20% { transform: translateY(-2px); }
+  40% { transform: translateY(2px); }
+  60% { transform: translateY(-2px); }
+  80% { transform: translateY(2px); }
+  100% { transform: translateY(0); }
+}
+.vibrate {
+  animation: vibrate 0.5s infinite;
+}
+`;
 
 function BackToTop() {
-    useEffect(() => {
-        const progressPath = document.querySelector('.progress-wrap path') as SVGPathElement | null;
-        if (!progressPath) return;
+  useEffect(() => {
+    // Inject vibration keyframes into the document head
+    const styleTag = document.createElement("style");
+    styleTag.innerHTML = vibrationStyle;
+    document.head.appendChild(styleTag);
 
-        const pathLength = progressPath.getTotalLength();
-        progressPath.style.transition = 'none';
-        progressPath.style.strokeDasharray = `${pathLength} ${pathLength}`;
-        progressPath.style.strokeDashoffset = `${pathLength}`;
-        progressPath.getBoundingClientRect();
-        progressPath.style.transition = 'stroke-dashoffset 10ms linear';
+    const progressPath = document.querySelector(
+      ".progress-arrow path"
+    ) as SVGPathElement | null;
+    if (!progressPath) return;
 
-        const updateProgress = () => {
-            const scroll = window.scrollY;
-            const height = document.documentElement.scrollHeight - window.innerHeight;
-            const progress = pathLength - (scroll * pathLength / height);
-            progressPath.style.strokeDashoffset = `${progress}`;
-        };
+    const pathLength = progressPath.getTotalLength();
+    progressPath.style.transition = "none";
+    progressPath.style.strokeDasharray = `${pathLength} ${pathLength}`;
+    progressPath.style.strokeDashoffset = `${pathLength}`;
+    progressPath.getBoundingClientRect();
+    progressPath.style.transition = "stroke-dashoffset 10ms linear";
 
-        const handleScroll = () => {
-            updateProgress();
+    const updateProgress = () => {
+      const scroll = window.scrollY;
+      const height = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = pathLength - (scroll * pathLength) / height;
+      progressPath.style.strokeDashoffset = `${progress}`;
+    };
 
-            const offset = 50;
-            const backToTopButton = document.querySelector('.progress-wrap');
-            const switcher = document.querySelector('.rts-switcher');
+    const handleScroll = () => {
+      updateProgress();
 
-            if (backToTopButton && switcher) {
-                if (window.scrollY > offset) {
-                    backToTopButton.classList.add('active-progress');
-                    switcher.classList.add('btt__visible');
-                } else {
-                    backToTopButton.classList.remove('active-progress');
-                    switcher.classList.remove('btt__visible');
-                }
-            }
-        };
+      const offset = 50;
+      const backToTopButton = document.querySelector(".backtotop-wrap");
+      if (backToTopButton) {
+        if (window.scrollY > offset) {
+          backToTopButton.classList.add("active-progress");
+        } else {
+          backToTopButton.classList.remove("active-progress");
+        }
+      }
+    };
 
-        const scrollToTop = (event: Event) => {
-            event.preventDefault();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
+    window.addEventListener("scroll", handleScroll);
 
-        window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      document.head.removeChild(styleTag);
+    };
+  }, []);
 
-        const backToTopButton = document.querySelector('.progress-wrap');
-        backToTopButton?.addEventListener('click', scrollToTop);
+  const scrollToTop = (event: React.MouseEvent) => {
+    event.preventDefault();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-            backToTopButton?.removeEventListener('click', scrollToTop);
-        };
-    }, []);
+  const handlePhoneClick = () => {
+    window.location.href = "tel:+919842972802";
+  };
 
-    return (
-        <>
-            {/* BACK TO TOP AREA START */}
-            <div className="progress-wrap">
-                <svg
-                    className="progress-circle svg-content"
-                    width="100%"
-                    height="100%"
-                    viewBox="-1 -1 102 102"
-                >
-                    <path
-                        d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"
-                        style={{
-                            transition: "stroke-dashoffset 10ms linear 0s",
-                            strokeDasharray: "307.919, 307.919",
-                            strokeDashoffset: "307.919"
-                        }}
-                    />
-                </svg>
-            </div>
-            <div className="rts-switcher"></div>
-            {/* BACK TO TOP AREA END */}
-        </>
-    );
+  return (
+    <>
+      {/* Phone icon - fixed left bottom, vibrate animation */}
+      <div
+        style={{
+          position: "fixed",
+          left: 16,
+          bottom: 24,
+          zIndex: 9999,
+          width: 40,
+          height: 40,
+          background: "#fff",
+          borderRadius: "50%",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+        }}
+        title="Call +91 98429 72802"
+        onClick={handlePhoneClick}
+      >
+        <img
+          src="/phone.png"
+          alt="Phone"
+          className="vibrate"
+          style={{
+            width: 22,
+            height: 22,
+            pointerEvents: "none",
+          }}
+        />
+      </div>
+      {/* Up arrow - fixed right bottom, vibrate animation */}
+      <div
+        className="backtotop-wrap"
+        style={{
+          position: "fixed",
+          right: 16,
+          bottom: 24,
+          zIndex: 9999,
+          width: 40,
+          height: 40,
+          background: "#22c55e",
+          borderRadius: "50%",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.10)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+        }}
+        title="Back to Top"
+        onClick={scrollToTop}
+      >
+        <svg
+          className="progress-arrow vibrate"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M12 19V5M12 5L5 12M12 5l7 7"
+            stroke="#fff"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill="none"
+          />
+        </svg>
+      </div>
+    </>
+  );
 }
 
 export default BackToTop;

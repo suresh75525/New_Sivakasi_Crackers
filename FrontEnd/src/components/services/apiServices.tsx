@@ -5,12 +5,6 @@ const getSessionId = () => {
   return sessionStorage.getItem("session_id") || "";
 };
 
-// Get categories
-export const getCategories = async () => {
-  const { data } = await axioApi.get("/products/categories");
-  return data;
-};
-
 // Get homepage products
 export const getHomepageProducts = async () => {
   const { data } = await axioApi.get("/products/homepage");
@@ -20,6 +14,27 @@ export const getHomepageProducts = async () => {
 export const getProducts = async () => {
   const { data } = await axioApi.get("/products/getAllProducts");
   return data;
+};
+
+// Get categories
+export const getCategories = async () => {
+  const { data } = await axioApi.get("/products/categories");
+  return data;
+};
+export const updateCartQuantity = async (
+  product_id: number,
+  quantity: number,
+  method: "add" | "subtract"
+): Promise<string> => {
+  const session_id = getSessionId();
+  const { data } = await axioApi.post("/cart/guest/update", {
+    session_id,
+    product_id,
+    quantity,
+    method,
+  });
+  // Only return the message field
+  return data.message;
 };
 
 // Add to cart
@@ -104,4 +119,19 @@ export const getOrderDtls = async () => {
     headers: { Authorization: `Bearer ${token}` },
   });
   return data;
+};
+
+export const removeProductFromCart = async (
+  product_id: number | "all"
+): Promise<string> => {
+  const session_id = getSessionId();
+  try {
+    const { data } = await axioApi.post("/cart/guest/remove", {
+      session_id,
+      product_id,
+    });
+    return data.message || "success";
+  } catch (error) {
+    return "fail";
+  }
 };

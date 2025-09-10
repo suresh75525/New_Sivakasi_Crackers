@@ -29,17 +29,28 @@ export default function Home() {
   };
 
   return (
-    <div className="demo-one">
+    <div className="demo-one" style={{ marginTop: 40 }}>
       <HeaderFive />
       <>
         {/* ...breadcrumb and separator... */}
         <div className="rts-register-area rts-section-gap bg_light-1">
           <div className="container">
-            <div className="row">
-              <div className="col-lg-12">
+            <div className="row" style={{ justifyContent: "center" }}>
+              <div
+                className="col-lg-8"
+                style={{ display: "flex", justifyContent: "center" }}
+              >
                 <div
                   className="registration-wrapper-1"
-                  style={{ maxWidth: 400, margin: "0 auto" }}
+                  style={{
+                    maxWidth: 400,
+                    width: "100%",
+                    margin: "48px auto",
+                    padding: "32px 28px",
+                    background: "#fff",
+                    borderRadius: "18px",
+                    boxShadow: "0 4px 24px rgba(0,0,0,0.10)",
+                  }}
                 >
                   <div
                     style={{
@@ -58,29 +69,68 @@ export default function Home() {
                       color: "#FF9900",
                       textAlign: "center",
                       marginBottom: 24,
+                      fontWeight: 700,
+                      fontSize: "2rem",
+                      letterSpacing: 1,
                     }}
                   >
                     Login
                   </h3>
                   <form className="registration-form" onSubmit={handleLogin}>
-                    <div className="input-wrapper" style={{ marginBottom: 18 }}>
-                      <label htmlFor="email">Email*</label>
+                    <div className="input-wrapper" style={{ marginBottom: 22 }}>
+                      <label
+                        htmlFor="email"
+                        style={{
+                          fontWeight: 600,
+                          marginBottom: 6,
+                          display: "block",
+                        }}
+                      >
+                        Email<span style={{ color: "red" }}>*</span>
+                      </label>
                       <input
                         type="email"
                         id="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
+                        style={{
+                          padding: "10px",
+                          fontSize: "16px",
+                          borderRadius: "6px",
+                          border: "1px solid #e0e0e0",
+                          width: "100%",
+                          marginTop: "6px",
+                          boxSizing: "border-box",
+                        }}
                       />
                     </div>
-                    <div className="input-wrapper" style={{ marginBottom: 24 }}>
-                      <label htmlFor="password">Password*</label>
+                    <div className="input-wrapper" style={{ marginBottom: 28 }}>
+                      <label
+                        htmlFor="password"
+                        style={{
+                          fontWeight: 600,
+                          marginBottom: 6,
+                          display: "block",
+                        }}
+                      >
+                        Password<span style={{ color: "red" }}>*</span>
+                      </label>
                       <input
                         type="password"
                         id="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
+                        style={{
+                          padding: "10px",
+                          fontSize: "16px",
+                          borderRadius: "6px",
+                          border: "1px solid #e0e0e0",
+                          width: "100%",
+                          marginTop: "6px",
+                          boxSizing: "border-box",
+                        }}
                       />
                     </div>
                     {error && (
@@ -96,9 +146,17 @@ export default function Home() {
                     )}
                     <button
                       className="rts-btn btn-primary"
-                      style={{ width: "100%" }}
+                      style={{
+                        width: "100%",
+                        padding: "12px 0",
+                        fontSize: "1.1rem",
+                        fontWeight: 700,
+                        borderRadius: "6px",
+                        marginTop: "8px",
+                        letterSpacing: 0.5,
+                      }}
                       type="submit"
-                      disabled={loading} // <-- disable while loading
+                      disabled={loading}
                     >
                       {loading ? "Logging in..." : "Login Account"}
                     </button>
@@ -107,7 +165,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </div>
+        </div>{" "}
       </>
       <ShortService />
     </div>

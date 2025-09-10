@@ -2,7 +2,7 @@ const express = require("express");
 require("dotenv").config();
 const cors = require("cors");
 const sequelize = require("./config/db");
-
+const path = require("path");
 const authRoutes = require("./routes/authRoutes");
 const productRoutes = require("./routes/productRoutes");
 const cartRoutes = require("./routes/cartRoutes");
@@ -27,8 +27,8 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/invoices", invoiceRoutes);
 
-app.use("/invoices", express.static("invoices"));
-
+// Example for Express.js
+app.use("/invoices", express.static(path.join(__dirname, "invoices")));
 sequelize
   .authenticate()
   .then(() => console.log("✅ MySQL Connected..."))

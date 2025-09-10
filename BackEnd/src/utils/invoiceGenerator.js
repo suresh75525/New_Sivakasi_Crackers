@@ -8,7 +8,7 @@ const User = require("../models/User");
 const Address = require("../models/Address");
 
 // ---------- helpers ----------
-const INR = (n) => `₹${Number(n || 0).toFixed(2)}`;
+const INR = (n) => `${Number(n || 0).toFixed(2)}`;
 const ensureDir = (p) => {
   if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true });
 };
@@ -28,12 +28,10 @@ function brandInfo() {
 
 // ---------- sections ----------
 function drawTopBar(doc) {
-  // slim colored brand bar
   doc.save();
   doc.rect(0, 0, doc.page.width, 60).fill("#2C2C54");
   doc.restore();
 
-  // accent
   doc.save();
   doc.rect(0, 60, doc.page.width, 6).fill("#FFC233");
   doc.restore();
@@ -42,7 +40,6 @@ function drawTopBar(doc) {
 function drawBrandHeader(doc) {
   const b = brandInfo();
 
-  // logo
   if (b.logo && fs.existsSync(b.logo)) {
     try {
       doc.image(b.logo, 32, 12, { height: 46 });
@@ -69,12 +66,10 @@ function drawCustomerBlock(doc, y, order, addr) {
   const L = 32,
     W = (doc.page.width - 64) / 2;
 
-  // left col
   doc.text(`Cus. Name : ${order.User?.name || ""}`, L, y);
   doc.text(`Address   : ${addr?.address_line1 || ""}`, L, y + 16);
   doc.text(`Pin code   : ${addr?.pincode || ""}`, L, y + 32);
 
-  // right col
   doc.text(`Mobile No : ${order.User?.mobile_number || ""}`, L + W + 12, y);
   doc.text(`City    : ${addr?.city || ""}`, L + W + 12, y + 16);
 
@@ -82,14 +77,12 @@ function drawCustomerBlock(doc, y, order, addr) {
 }
 
 function tableHeader(doc, y) {
-  // header background
   doc.save();
   doc.rect(32, y, doc.page.width - 64, 24).fill("#F6F6FA");
   doc.restore();
 
   doc.fillColor("#111").font("Helvetica-Bold").fontSize(10);
 
-  // columns (like your sheet and screenshot)
   const cols = {
     sno: 40,
     name: 80,
@@ -101,10 +94,12 @@ function tableHeader(doc, y) {
   doc.text("S.No", cols.sno, y + 6, { width: 40 });
   doc.text("Particular", cols.name, y + 6, { width: 260 });
   doc.text("Pcs/Box", cols.pcs, y + 6, { width: 60, align: "right" });
-  doc.text("Actual Price", cols.apr, y + 6, { width: 70, align: "right" });
-  doc.text("Offer Price", cols.ofr, y + 6, { width: 70, align: "right" });
+  doc.text("Actual Price (Rs.)", cols.apr, y + 6, {
+    width: 70,
+    align: "right",
+  });
+  doc.text("Offer Price (Rs.)", cols.ofr, y + 6, { width: 70, align: "right" });
 
-  // border line
   doc
     .moveTo(32, y + 24)
     .lineTo(doc.page.width - 32, y + 24)
@@ -121,7 +116,6 @@ function tableRows(doc, y, cols, items) {
 
   items.forEach((it, idx) => {
     const rowH = 18;
-    // zebra bg
     if (zebra) {
       doc.save();
       doc.rect(32, y - 2, doc.page.width - 64, rowH + 4).fill("#FBFBFF");
@@ -131,8 +125,7 @@ function tableRows(doc, y, cols, items) {
 
     const qty = Number(it.quantity || 0);
     const aprU = Number(it.price_per_unit || 0);
-    const disL = Number(it.discount_amount || 0);
-    const ofrU = qty > 0 ? aprU - disL / qty : aprU;
+    const ofrU = Number(it.discount_amount || 0); // Offer Price from OrderItem (per-unit)
 
     doc.text(String(idx + 1), cols.sno, y, { width: 40 });
     doc.text(it.product_name || "", cols.name, y, { width: 260 });
@@ -143,7 +136,6 @@ function tableRows(doc, y, cols, items) {
     y += rowH;
   });
 
-  // bottom border
   doc
     .moveTo(32, y)
     .lineTo(doc.page.width - 32, y)
@@ -154,11 +146,9 @@ function tableRows(doc, y, cols, items) {
 }
 
 function totalsPanel(doc, y, totals) {
-  // left notice
   doc.font("Helvetica-Bold").fontSize(11).fillColor("#D11");
   doc.text("Not Return or Not Exchange", 40, y);
 
-  // right summary box
   const boxW = 220,
     boxH = 86,
     boxX = doc.page.width - 40 - boxW,
@@ -175,7 +165,7 @@ function totalsPanel(doc, y, totals) {
   const L = boxX + 14;
   doc.font("Helvetica").fontSize(10).fillColor("#333");
   doc.text("Total :", L, boxY + 12);
-  doc.text("Discount :", L, boxY + 30);
+  doc.text("Discount (%) :", L, boxY + 30);
   doc.text("GST :", L, boxY + 48);
   doc.font("Helvetica-Bold").text("Net Amt :", L, boxY + 66);
 
@@ -197,7 +187,6 @@ function totalsPanel(doc, y, totals) {
 }
 
 function footer(doc) {
-  // yellow strip + “HAPPY DIWALI”
   doc.save();
   doc.rect(0, doc.page.height - 40, doc.page.width, 40).fill("#FFC233");
   doc.restore();
@@ -213,10 +202,8 @@ function footer(doc) {
 }
 
 // ---------- main ----------
-// ...existing code...
 
 async function generateInvoice(orderId) {
-  // fetch data with Product join
   const Product = require("../models/Product");
   const order = await Order.findByPk(orderId, {
     include: [
@@ -242,25 +229,26 @@ async function generateInvoice(orderId) {
 
   // compute totals
   let total = 0,
-    discount = 0;
+    discount = 73,
+    net = 0;
+
   const rows = order.OrderItems.map((oi) => {
     const qty = Number(oi.quantity || 0);
     const actualPrice = Number(oi.Product?.price_per_unit || 0); // Actual Price
-    const offerPrice = Number(oi.Product?.original_price || 0); // Offer Price
-    console.log("hhufhdsf", actualPrice, offerPrice);
+    const offerPrice = Number(oi.discount_amount || 0); // Offer Price (per-unit from OrderItem)
+
     total += actualPrice * qty;
-    discount += offerPrice * qty;
+    net += offerPrice; // total offer price
 
     return {
       product_name: oi.Product?.name || oi.product_name,
       quantity: qty,
       price_per_unit: actualPrice,
-      original_price: offerPrice,
+      discount_amount: offerPrice, // Offer Price per-unit
     };
   });
 
   const gst = 0;
-  const net = total - discount;
 
   // output
   const dir = path.join(__dirname, "..", "invoices");
@@ -273,7 +261,6 @@ async function generateInvoice(orderId) {
   drawTopBar(doc);
   drawBrandHeader(doc);
 
-  // meta band
   doc.fillColor("#666").font("Helvetica").fontSize(10);
   doc.text(`Invoice No: ${order.order_id}`, 32, 78);
   const created = order.created_at ? new Date(order.created_at) : new Date();
@@ -297,21 +284,16 @@ async function generateInvoice(orderId) {
 
   y = drawCustomerBlock(doc, y, order, addr);
 
-  // table
   const th = tableHeader(doc, y);
   y = th.y;
   y = tableRows(doc, y, th.cols, rows);
 
-  // totals
   y = totalsPanel(doc, y, { subtotal: total, discount, gst, net });
 
-  // footer
   footer(doc);
 
   doc.end();
   return filePath;
 }
-
-// ...existing code...
 
 module.exports = { generateInvoice };
