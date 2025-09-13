@@ -141,7 +141,7 @@ export default function CheckOutMain() {
         justifyContent: "center",
         background: "#f0f6ff",
         paddingBottom: "50px",
-        paddingTop: "100px",
+        paddingTop: "150px",
       }}
     >
       <div

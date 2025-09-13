@@ -135,7 +135,7 @@ const CartMain = () => {
       </style>
       <div
         className="rts-cart-area rts-section-gap bg_light-1"
-        style={{ paddingTop: "60px" }}
+        style={{ paddingTop: "100px" }}
       >
         <div className="container">
           {/* Breadcrumb */}
@@ -237,7 +237,7 @@ const CartMain = () => {
                               }}
                             >
                               <img
-                                src={item.image}
+                                src={item.image ? `${item.image}` : ""}
                                 alt="shop"
                                 style={{
                                   width: 50,

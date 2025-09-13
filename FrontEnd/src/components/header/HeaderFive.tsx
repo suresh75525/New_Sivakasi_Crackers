@@ -336,6 +336,21 @@ function HeaderFive({
         </div>
         {/* rts header area end */}
       </>
+      <div
+        style={{
+          width: "100%",
+          textAlign: "center",
+          background: "#fffbe6",
+          color: "#222",
+          fontWeight: 700,
+          fontSize: isMobile ? 13 : 17, // Reduce font size on mobile
+          padding: isMobile ? "7px 0" : "10px 0",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+          letterSpacing: 0.5,
+        }}
+      >
+        🎆 Pooja Offer: Buy your favorite crackers and we’ll add free 12 shots
+      </div>
       <BackToTop />
       {/* <PhoneLogo /> */}
       {/* <Sidebar /> */}

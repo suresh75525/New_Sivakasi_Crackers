@@ -34,7 +34,7 @@ interface ProductListProps {
 }
 
 const PRODUCTS_PER_PAGE = 5;
-
+const IMAGE_URL = process.env.NEXT_PUBLIC_IMAGE_URL;
 const ProductList: React.FC<ProductListProps> = ({
   categories,
   selectedCategoryId,
@@ -202,7 +202,11 @@ const ProductList: React.FC<ProductListProps> = ({
                         )}
 
                         <img
-                          src={product.image_url}
+                          src={
+                            product.image_url
+                              ? `${IMAGE_URL}/${product.image_url}`
+                              : ""
+                          }
                           alt={product.name}
                           className={styles.productImage}
                           style={{ cursor: "pointer" }}
@@ -352,7 +356,11 @@ const ProductList: React.FC<ProductListProps> = ({
             onClick={(e) => e.stopPropagation()}
           >
             <img
-              src={selectedProduct.image_url}
+              src={
+                selectedProduct.image_url
+                  ? `${IMAGE_URL}/${selectedProduct.image_url}`
+                  : ""
+              }
               alt={selectedProduct.name}
               style={{
                 width: "180px",
